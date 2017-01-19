@@ -7,7 +7,7 @@ import Anchor from 'grommet/components/Anchor';
 import Box from 'grommet/components/Box';
 import Heading from 'grommet/components/Heading';
 import LoginForm from 'grommet/components/LoginForm';
-import GrommetIcon from 'grommet/components/icons/base/BrandGrommetOutline';
+import AppIcon from 'grommet/components/icons/base/BrandHpeElementPath';
 
 export class LoginPage extends Component {
   constructor(props) {
@@ -37,17 +37,20 @@ export class LoginPage extends Component {
   }
 
   render() {
+    const onSubmitClick = (!this.props.request)
+      ? this._onSubmitClick
+      : undefined;
     return (
       <Box full={true} pad="medium" justify="center"
         align="center">
-        <GrommetIcon size="xlarge" colorIndex="brand" />
+        <AppIcon size="xlarge" colorIndex="brand" />
         <Heading margin="none">
-          Grommet Passport
+          Passport
         </Heading>
         <LoginForm
           align="center"
           errors={this.state.error}
-          onSubmit={this._onSubmitClick}
+          onSubmit={onSubmitClick}
           rememberMe={true}
           forgotPassword={
             <Anchor 
