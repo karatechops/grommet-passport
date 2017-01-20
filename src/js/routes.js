@@ -1,7 +1,8 @@
 import React from 'react';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
-import Login from './containers/Login/LoginPage';
 import App from './containers/App';
+import Login from './containers/Login/LoginPage';
+import UserPage from './containers/User/UserPage';
 import NotFound from './containers/NotFoundPage';
 import Dashboard from './containers/DashboardPage';
 
@@ -24,9 +25,11 @@ export const getRoutes = (store) => {
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={Login} />
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="*" component={NotFound} />
       </Route>
+      <Route path="/dashboard" component={Dashboard}>
+        <Route path="user" component={UserPage} />
+      </Route>
+      <Route path="*" component={NotFound} />
     </Router>
   );
 };

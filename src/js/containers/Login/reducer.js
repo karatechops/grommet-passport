@@ -4,7 +4,8 @@ const initialState = {
   request: false,
   error: '',
   loggedIn: false,
-  sessionId: ''
+  sessionId: '',
+  user: {}
 };
 
 function login(state = initialState, action) {
@@ -17,13 +18,13 @@ function login(state = initialState, action) {
       };
     case ActionTypes.USER_LOGIN_SUCCESS:
       const { sessionId } = action.user;
-      console.log(action.user);
       return {
         ...state,
         request: false,
         loggedIn: true,
         error: '',
-        sessionId: sessionId
+        sessionId: sessionId,
+        user: action.user
       };
     case ActionTypes.USER_LOGIN_ERROR:
       return {
