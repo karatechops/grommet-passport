@@ -15,7 +15,8 @@ const router = express.Router();
 const passport = new Passport({
   url: process.env.PASSPORT_URL,
   username: process.env.PASSPORT_USER,
-  password: process.env.PASSPORT_PASSWORD
+  password: process.env.PASSPORT_PASSWORD,
+  appId: process.env.PASSPORT_APP_ID
 });
 
 // Basic test to check API functionality is sound.
@@ -25,21 +26,31 @@ router.get('/ping', function(req, res) {
 
 
 // Login request
-router.post('/user/login', function(req, res) {
+router.post('/user/login', (req, res) => {
   const reqCreds = {
     username: req.body.username,
     password: req.body.password
   };
 
   passport.userLogin(reqCreds)
-    .then((data) => {
-      console.log('login data:', data);
-      return res.status(200).send();
+    .then((sessionId) => {
+      passport.userDetails(sessionId)
+        .then((data) => {
+          return res.status(200).send(data);
+        })
+        .catch((err) => 
+          res.status(400).send({ error: err })
+        );
     })
     .catch((err) => {
       console.log('login error:', err);
       return res.status(400).send({ error: err });
     });
+});
+
+// Validate user's session.
+router.post('/user/session/', (req, res) => {
+  console.log('req.body', req.body);
 });
 
 export default router;

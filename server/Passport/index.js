@@ -1,18 +1,19 @@
 import request from 'request';
-import util from 'util';
+//import util from 'util';
 import { parseString } from 'xml2js';
-import { loginBody } from './requests';
+import { loginBody, detailsBody } from './requests';
 
 export default class Passport {
-  constructor({ url, username, password}) {
+  constructor({ url, username, password, appId}) {
     this.passportCreds = {
       url,
       username,
-      password
+      password,
+      appId
     };
   }
 
-  createReqHeader({username, password}, body) {
+  _createReqHeader({username, password}, body) {
     return {
       "Authorization": "Basic " + new Buffer(username + ":" + password).toString("base64"),
       "Content-Length": Buffer.byteLength(body),
@@ -20,15 +21,21 @@ export default class Passport {
     };
   }
 
+  _createReq(passportCreds, body) {
+    const request = {
+      url: passportCreds.url,
+      headers: this._createReqHeader(passportCreds, body),
+      body
+    };
+
+    return request;
+  }
+
   userLogin({ username, password }) {
     return new Promise((resolve, reject) => {
-      const body = loginBody({ username, password });
+      const body = loginBody({ username, password }, this.passportCreds);
 
-      const requestParams = {
-        url: this.passportCreds.url,
-        headers: this.createReqHeader(this.passportCreds, body),
-        body
-      };
+      const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
         if (err) {
@@ -52,6 +59,45 @@ export default class Passport {
         });
       });
     });
+  }
+
+  userDetails(sessionId) {
+    return new Promise((resolve, reject) => {
+      const body = detailsBody(sessionId, this.passportCreds);
+      const requestParams = this._createReq(this.passportCreds, body);
+
+      request.post(requestParams, (err, soapRes, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        parseString(body, {explicitArray: false}, function (err, result) {
+          if (result && result['SOAP-ENV:Envelope']) {
+            const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getUserResponse'];
+            //console.log(util.inspect(soapResponse, false, null));
+            
+            if (soapResponse['exception']) {
+              const errMsg = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getUserResponse']['exception']['faults']['faultMessage'];
+              reject(errMsg);
+            }
+
+            const userDetails = { 
+              sessionId,
+              userDetails: soapResponse.coreProfile, 
+              userOptionalDetails: soapResponse.extendedProfile
+            };
+
+            resolve(userDetails);
+          } else {
+            reject('Error processing request.');
+          }
+        });
+      });
+    });
+  }
+
+  validateSession(sessionId) {
+
   }
 
 

@@ -3,6 +3,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import Login from './containers/Login/LoginPage';
 import App from './containers/App';
 import NotFound from './containers/NotFoundPage';
+import Dashboard from './containers/DashboardPage';
 
 export const getRoutes = (store) => {
   /*const authRequired = (nextState, replace) => {
@@ -23,6 +24,7 @@ export const getRoutes = (store) => {
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={Login} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="*" component={NotFound} />
       </Route>
     </Router>

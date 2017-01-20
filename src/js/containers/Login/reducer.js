@@ -3,7 +3,8 @@ import * as ActionTypes from './constants';
 const initialState = {
   request: false,
   error: '',
-  loggedIn: false
+  loggedIn: false,
+  sessionId: ''
 };
 
 function login(state = initialState, action) {
@@ -15,11 +16,14 @@ function login(state = initialState, action) {
         error: ''
       };
     case ActionTypes.USER_LOGIN_SUCCESS:
+      const { sessionId } = action.user;
+      console.log(action.user);
       return {
         ...state,
         request: false,
         loggedIn: true,
-        error: ''
+        error: '',
+        sessionId: sessionId
       };
     case ActionTypes.USER_LOGIN_ERROR:
       return {
@@ -32,7 +36,8 @@ function login(state = initialState, action) {
         ...state,
         request: false,
         error: '',
-        loggedIn: false
+        loggedIn: false,
+        sessionId: ''
       };
     default:
       return state;

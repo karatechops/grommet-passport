@@ -1,4 +1,6 @@
 import fetch from 'isomorphic-fetch';
+import cookie from 'react-cookie';
+import { browserHistory } from 'react-router';
 import * as ActionTypes from './constants';
 
 export const loginRequest = () => ({ 
@@ -20,7 +22,7 @@ export const logoutSuccess = (user) => ({
   user
 });
 
-export function login({username, password}) {
+export function login(user) {
   return (dispatch, getState) => {
     const { url } = getState().api;
 
@@ -32,7 +34,7 @@ export function login({username, password}) {
       headers: new Headers({
         'Content-Type': 'application/json'
       }),
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify(user)
     })
       .then((response) =>
         response.json().then((json) => ({
@@ -47,9 +49,50 @@ export function login({username, password}) {
           return dispatch(loginError(error));
         }
 
-        return dispatch(loginSuccess(json));
-      }, (err) =>
-        dispatch(loginError('There was an error processing your request.'))
-      );
+        // Set session ID in cookie.
+        const { sessionId } = json;
+        cookie.save('GPsessionId', sessionId, { path: '/' });
+
+        dispatch(loginSuccess(json));
+        return browserHistory.push('/dashboard');
+      }, (err) => {
+        dispatch(loginError('There was an error processing your request.'));
+      }
+    );
   };
 };
+
+export function validateSession(sessionId) {
+  return (dispatch, getState) => {
+    const { url } = getState().api;
+
+    dispatch(loginRequest());
+
+    fetch(`${url}/user/session`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({ sessionId })
+    })
+      .then((response) =>
+        response.json().then((json) => ({
+          status: response.status,
+          statusText: response.statusText,
+          json
+        }))
+      )
+      .then(({ status, statusText, json }) => {
+        if (status >= 400) {
+          const error = json.error || 'There was an error processing your request.';
+          return dispatch(loginError(error));
+        }
+        //cookie.load('sessionId');
+        return dispatch(loginSuccess(json));
+      }, (err) => {
+        return dispatch(loginError('There was an error processing your request.'));
+      }
+    );
+  };
+}

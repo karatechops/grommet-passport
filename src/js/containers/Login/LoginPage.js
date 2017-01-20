@@ -14,14 +14,14 @@ export class LoginPage extends Component {
     super(props);
 
     this.state = {
-      error: []
+      error: ''
     };
 
     this._onSubmitClick = this._onSubmitClick.bind(this);
   }
 
   componentWillReceiveProps({ request, error}) {
-    this.setState({ error: [error] });
+    this.setState({ error });
   }
 
   _onSubmitClick({username, password, rememberMe}) {
@@ -49,7 +49,6 @@ export class LoginPage extends Component {
         </Heading>
         <LoginForm
           align="center"
-          errors={this.state.error}
           onSubmit={onSubmitClick}
           rememberMe={true}
           forgotPassword={

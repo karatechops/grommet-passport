@@ -1,11 +1,11 @@
-export const loginBody = ({ username, password }) =>
+export const loginBody = ({ username, password }, { appId }) =>
   `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:pas="http://hppws.globalops.hp.com/Passport">\
     <soapenv:Header/>\
      <soapenv:Body>\
         <pas:loginRequest>\
            <requestContext>\
               <systemLanguageCode>en</systemLanguageCode>\
-              <applicationId>204736_BRANDCENTRAL2_ITG_HPE</applicationId>\
+              <applicationId>${appId}</applicationId>\
            </requestContext>\
            <profileIdentity>\
               <userId>${username}</userId>\
@@ -14,5 +14,19 @@ export const loginBody = ({ username, password }) =>
               <currentPassword>${password}</currentPassword>\
            </profileCredentials>\
         </pas:loginRequest>\
+     </soapenv:Body>\
+  </soapenv:Envelope>`;
+
+export const detailsBody = (sessionId, { appId }) =>
+  `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:pas="http://hppws.globalops.hp.com/Passport">\
+     <soapenv:Header/>\
+     <soapenv:Body>\
+        <pas:getUserRequest>\
+           <requestContext>\
+              <sessionToken>${sessionId}</sessionToken>\
+              <systemLanguageCode>en</systemLanguageCode>\
+              <applicationId>${appId}</applicationId>\
+           </requestContext>\
+        </pas:getUserRequest>\
      </soapenv:Body>\
   </soapenv:Envelope>`;
