@@ -5,11 +5,11 @@ const initialState = {
   error: '',
   profileId: '',
   userId: '',
-  emailAddress: '',
-  firstName: '',
-  lastName: '',
-  preferredLanguage: '',
-  residentCountryCode: '',
+  emailAddress: 'jane.doe@hpe.com',
+  firstName: 'Jane',
+  lastName: 'Doe',
+  preferredLanguage: 'en',
+  residentCountryCode: 'US',
   securityLevel: '0',
   contactByEmail: 'N',
   contactByMail: 'N',
@@ -26,7 +26,6 @@ function user(state = initialState, action) {
         error: ''
       };
     case ActionTypes.USER_SUCCESS:
-      console.log(action.user);
       return {
         ...state,
         request: false,
