@@ -7,7 +7,6 @@ import PageMarquee from '../../components/PageMarquee';
 
 export class UserPage extends Component {
   render() {
-    console.log(this.props.userDetails);
     return (
       <Box align="center">
         <PageMarquee title="Edit User" />
@@ -20,7 +19,6 @@ export class UserPage extends Component {
 };
 
 function mapStateToProps(state, props) {
-  console.log(state);
   const { userDetails } = state.login.user;
 
   return {

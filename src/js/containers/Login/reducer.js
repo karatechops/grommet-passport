@@ -10,13 +10,13 @@ const initialState = {
 
 function login(state = initialState, action) {
   switch(action.type) {
-    case ActionTypes.USER_LOGIN_REQUEST:
+    case ActionTypes.LOGIN_REQUEST:
       return {
         ...state,
         request: true,
         error: ''
       };
-    case ActionTypes.USER_LOGIN_SUCCESS:
+    case ActionTypes.LOGIN_SUCCESS:
       const { sessionId } = action.user;
       return {
         ...state,
@@ -26,13 +26,13 @@ function login(state = initialState, action) {
         sessionId: sessionId,
         user: action.user
       };
-    case ActionTypes.USER_LOGIN_ERROR:
+    case ActionTypes.LOGIN_ERROR:
       return {
         ...state,
         request: false,
         error: action.error
       };
-    case ActionTypes.USER_LOGOUT_SUCCESS:
+    case ActionTypes.LOGOUT_SUCCESS:
       return {
         ...state,
         request: false,

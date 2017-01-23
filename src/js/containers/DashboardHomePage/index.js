@@ -19,10 +19,10 @@ export class DashboardHomePage extends Component {
 };
 
 function mapStateToProps(state, props) {
-  const { userDetails } = state.login.user;
+  const { user } = state;
 
   return {
-    userDetails
+    user
   };
 }
 

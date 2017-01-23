@@ -17,7 +17,7 @@ export class DashboardPage extends Component {
   }
 
   render() {
-    const { firstName = "", lastName = "" } = this.props;
+    const { firstName, lastName } = this.props;
     return (
       <Box full={true}>
         <DashboardNav 
@@ -32,7 +32,7 @@ export class DashboardPage extends Component {
 };
 
 function mapStateToProps(state, props) {
-  const { firstName, lastName } = state.login.user.userDetails;
+  const { firstName, lastName } = state.user;
   return {
     firstName,
     lastName

@@ -1,24 +1,25 @@
 import fetch from 'isomorphic-fetch';
 import cookie from 'react-cookie';
 import { browserHistory } from 'react-router';
+import * as UserActions from '../User/actions';
 import * as ActionTypes from './constants';
 
 export const loginRequest = () => ({ 
-  type: ActionTypes.USER_LOGIN_REQUEST
+  type: ActionTypes.LOGIN_REQUEST
 });
 
 export const loginSuccess = (user) => ({ 
-  type: ActionTypes.USER_LOGIN_SUCCESS,
+  type: ActionTypes.LOGIN_SUCCESS,
   user
 });
 
 export const loginError = (error) => ({
-  type: ActionTypes.USER_LOGIN_ERROR,
+  type: ActionTypes.LOGIN_ERROR,
   error
 });
 
 export const logoutSuccess = (user) => ({ 
-  type: ActionTypes.USER_LOGOUT_SUCCESS,
+  type: ActionTypes.LOGOUT_SUCCESS,
   user
 });
 
@@ -54,6 +55,7 @@ export function login(user) {
         cookie.save('GPsessionId', sessionId, { path: '/' });
 
         dispatch(loginSuccess(json));
+        dispatch(UserActions.userSuccess(json));
         return browserHistory.push('/dashboard');
       }, (err) => {
         dispatch(loginError('There was an error processing your request.'));
