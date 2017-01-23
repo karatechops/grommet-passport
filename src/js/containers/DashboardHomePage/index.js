@@ -5,14 +5,13 @@ import { connect } from 'react-redux';
 import Box from 'grommet/components/Box';
 import PageMarquee from '../../components/PageMarquee';
 
-export class UserPage extends Component {
+export class DashboardHomePage extends Component {
   render() {
-    console.log(this.props.userDetails);
     return (
       <Box align="center">
-        <PageMarquee title="Edit User" />
+        <PageMarquee title="Dashboard" />
         <Box pad="large">
-          user details
+          Dashboard Home
         </Box>
       </Box>
     );
@@ -20,7 +19,6 @@ export class UserPage extends Component {
 };
 
 function mapStateToProps(state, props) {
-  console.log(state);
   const { userDetails } = state.login.user;
 
   return {
@@ -28,4 +26,4 @@ function mapStateToProps(state, props) {
   };
 }
 
-export default connect(mapStateToProps)(UserPage);
+export default connect(mapStateToProps)(DashboardHomePage);

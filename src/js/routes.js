@@ -5,6 +5,7 @@ import Login from './containers/Login/LoginPage';
 import UserPage from './containers/User/UserPage';
 import NotFound from './containers/NotFoundPage';
 import Dashboard from './containers/DashboardPage';
+import DashboardHomePage from './containers/DashboardHomePage';
 
 export const getRoutes = (store) => {
   /*const authRequired = (nextState, replace) => {
@@ -27,6 +28,7 @@ export const getRoutes = (store) => {
         <IndexRoute component={Login} />
       </Route>
       <Route path="/dashboard" component={Dashboard}>
+        <IndexRoute component={DashboardHomePage} />
         <Route path="user" component={UserPage} />
       </Route>
       <Route path="*" component={NotFound} />
