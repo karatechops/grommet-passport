@@ -7,6 +7,9 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import api from './api';
 
+// Middleware
+import { isAuthed } from './middleware/session';
+
 // Environment Variables
 import env from 'node-env-file';
 env(path.join(__dirname, '..', '.env'));
@@ -34,6 +37,12 @@ app.use(function(req, res, next) {
 
 // REST API
 app.use('/api', api);
+
+// Session check
+app.use('/', isAuthed, (req, res, next) => {
+  if ( req.path == '/') console.log('running sesssion middleware');
+  next();
+});
 
 // UI
 app.use('/', express.static(path.join(__dirname, '/../dist')));

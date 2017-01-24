@@ -20,10 +20,15 @@ const passport = new Passport({
 });
 
 // Basic test to check API functionality is sound.
-router.get('/ping', function(req, res) {
+router.get('/ping', (req, res) => {
   res.status(200).send('pong!');
 });
 
+// Check for Passport or Grommet Passport cookie.
+router.get('/session', (req, res) =>{
+  console.log('Grommet Passport Session: ', req.cookies.GPsessionId);
+  console.log('Passport Session: ', req.cookies.HPPSESSION);
+});
 
 // Login request
 router.post('/user/login', (req, res) => {

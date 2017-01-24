@@ -33,7 +33,6 @@
     "redux-thunk": "^2.1.0",
     "request": "^2.79.0",
     "strong-soap": "^1.1.0",
-    "ws": "^1.1.1",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {
