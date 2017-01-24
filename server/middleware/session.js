@@ -21,7 +21,8 @@ export function isAuthed(req, res, next) {
       .then((userId) => {
         passport.userDetails(sessionId)
           .then((user) => {
-            req.userData(user);
+            req.userData = user;
+            console.log('req', req.userData);
             return next();
           })
           .catch((err) => 
@@ -33,7 +34,7 @@ export function isAuthed(req, res, next) {
         return res.status(400).send({ error: err });
       });
     //res.redirect('/dashboard');
+  } else {
+    return next();
   }
-
-  return next();
 }

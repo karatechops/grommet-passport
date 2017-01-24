@@ -40,7 +40,7 @@ app.use('/api', api);
 
 // Session check
 app.use('/', isAuthed, (req, res, next) => {
-  if ( req.path == '/') console.log('running sesssion middleware');
+  if ( req.path == '/') console.log(req.userData);
   next();
 });
 
