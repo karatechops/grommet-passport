@@ -5,6 +5,7 @@ import { login } from './actions';
 
 import Anchor from 'grommet/components/Anchor';
 import Box from 'grommet/components/Box';
+import Button from 'grommet/components/Button';
 import Heading from 'grommet/components/Heading';
 import LoginForm from 'grommet/components/LoginForm';
 import AppIcon from 'grommet/components/icons/base/BrandHpeElementPath';
@@ -40,6 +41,7 @@ export class LoginPage extends Component {
     const onSubmitClick = (!this.props.request)
       ? this._onSubmitClick
       : undefined;
+
     return (
       <Box full={true} pad="medium" justify="center"
         align="center">
@@ -57,6 +59,11 @@ export class LoginPage extends Component {
               label='Forgot password?' 
             />
           }
+        />
+        <Button 
+          primary={true}
+          label="Log in with HPE Digital Badge" 
+          href="https://cf.passport.hpe.com/athp.fcc?TARGET=http%3A%2F%2Flocalhost%3A3000%2Fdashboard"
         />
       </Box>
     );
