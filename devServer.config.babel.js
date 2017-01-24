@@ -10,6 +10,18 @@ export default {
   watchOptions: {
     ignored: /node_modules/
   },
+  module: {
+    loaders: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'babel',
+        query: {
+          presets: ['react-hmre']
+        }
+      }
+    ]
+  },
   historyApiFallback: true,
   proxy: {
     '/api/*': 'http://localhost:8102'

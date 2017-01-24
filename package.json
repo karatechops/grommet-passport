@@ -17,10 +17,13 @@
     "body-parser": "^1.15.2",
     "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.5",
     "express": "^4.14.0",
     "grommet": "^1.2.0",
+    "history": "^3.0.0",
     "morgan": "^1.7.0",
     "node-env-file": "^0.1.8",
+    "query-string": "^4.3.1",
     "react": "^15.4.0",
     "react-cookie": "^1.0.4",
     "react-dom": "^15.4.0",
@@ -32,7 +35,6 @@
     "redux-router": "^2.1.2",
     "redux-thunk": "^2.1.0",
     "request": "^2.79.0",
-    "strong-soap": "^1.1.0",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {

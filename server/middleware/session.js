@@ -12,7 +12,7 @@ const passport = new Passport({
 });
 
 export function isAuthed(req, res, next) {
-  let sessionId = (req.cookies.GPsessionId || req.cookies.HPPSESSION)
+  const sessionId = (req.cookies.GPsessionId || req.cookies.HPPSESSION)
     ? req.cookies.HPPSESSION || GPsessionId
     : undefined;
 
@@ -31,10 +31,10 @@ export function isAuthed(req, res, next) {
       })
       .catch((err) => {
         console.log('session validation error:', err);
-        return res.status(400).send({ error: err });
+        return next();
       });
     //res.redirect('/dashboard');
   } else {
-    return next();
+    next();
   }
 }

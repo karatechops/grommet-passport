@@ -2,18 +2,17 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { RouterContext } from 'react-router';
 import { Provider } from 'react-redux';
-import configureStore from '../src/js/store';
-import createLocation from 'history/lib/createLocation';
 import env from 'node-env-file';
 import path from 'path';
-import { getRoutes } from '../src/js/routes';
 import { match } from 'react-router';
+import configureStore from '../src/js/store';
+import { getRoutes } from '../src/js/routes';
 
 // Load environment variables
 env(path.join(__dirname, '..', '.env'));
 
 export default function universalRender(req, res) {
-  const location = createLocation(req.url);
+  console.log('render');
   const store = configureStore({
     api: {
       url: process.env.API_URL
@@ -22,8 +21,8 @@ export default function universalRender(req, res) {
 
   match({
     routes: getRoutes(store),
-    location
-  }, function(err, redirectLocation, renderProps) {
+    location: req.url
+  }, function(err, redirectLocation, renderProps) { // eslint-disable-line consistent-return
     if (err) {
       console.error(err);
       return res.status(500).end('Internal server error');
