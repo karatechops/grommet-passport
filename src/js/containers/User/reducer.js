@@ -39,7 +39,7 @@ function user(state = initialState, action) {
         ...state,
         request: false,
         error: '',
-        questions: action.questions
+        questions: action.questions.data
       };
     case ActionTypes.USER_ERROR:
       return {

@@ -15,26 +15,24 @@ import TextInput from 'grommet/components/TextInput';
 import { LANGUAGES, COUNTRIES } from './constants';
 import { objArrayFind } from '../../utils';
 
-const renderInput = props => (
+const renderInput = ({ customProps = {}, input}) => (
   <TextInput 
-    onDOMChange={param => props.input.onChange(param.target.value)}
-    value={props.input.value} />
+    onDOMChange={param => input.onChange(param.target.value)}
+    value={input.value} 
+    placeHolder={customProps.placeHolder || undefined} />
 );
 
-const renderLanguageSelect = props => (
+const renderSelect = ({ customProps, input }) => (
   <Select placeHolder='Search'
-    options={props.customProps.options}
-    value={props.input.value}
-    onSearch={props.customProps.onSearch.bind(this, LANGUAGES, 'languageOptions')}
-    onChange={param => props.input.onChange(param.value)} />
-);
-
-const renderCountrySelect = props => (
-  <Select placeHolder='Search'
-    options={props.customProps.options}
-    value={props.input.value}
-    onSearch={props.customProps.onSearch.bind(this, COUNTRIES, 'countryOptions')}
-    onChange={param => props.input.onChange(param.value)} />
+    options={customProps.options}
+    value={input.value || customProps.defaultValue}
+    onSearch={ 
+      (customProps.onSearch)
+        ? customProps.onSearch.bind(
+            this, customProps.allOptions, customProps.stateKey)
+        : undefined
+    }
+    onChange={param => input.onChange(param.value)} />
 );
 
 const renderRadioSelect = props => (
@@ -64,6 +62,10 @@ export class UserForm extends Component {
     };
 
     this._onSearch = this._onSearch.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('next', nextProps);
   }
 
   _onSearch(allOptions, key, event) {
@@ -99,16 +101,38 @@ export class UserForm extends Component {
           </Heading>
         </Box>
         <FormField label="Security Question 1" htmlFor="securityQuestion1">
-          <Field name="securityQuestion1" component={renderInput} />
+          <Field name="securityQuestion1" component={renderSelect} 
+            customProps={{
+              options: this.props.questions,
+              defaultValue: (this.props.questions.length > 0) 
+                ? this.props.questions[0]
+                : undefined
+            }}
+          />
         </FormField>
         <FormField label="Security Answer 1" htmlFor="securityAnswer1">
-          <Field name="securityAnswer1" component={renderInput} />
+          <Field name="securityAnswer1" component={renderInput} 
+            customProps={{
+              placeHolder: 'Security answer cannot have & | * " `'
+            }}
+          />
         </FormField>
         <FormField label="Security Question 2" htmlFor="securityQuestion2">
-          <Field name="securityQuestion2" component={renderInput} />
+          <Field name="securityQuestion2" component={renderSelect} 
+            customProps={{
+              options: this.props.questions,
+              defaultValue: (this.props.questions.length > 0) 
+                ? this.props.questions[1]
+                : undefined
+            }}
+          />
         </FormField>
         <FormField label="Security Answer 2" htmlFor="securityAnswer2">
-          <Field name="securityAnswer2" component={renderInput} />
+          <Field name="securityAnswer2" component={renderInput} 
+            customProps={{
+              placeHolder: 'Security answer cannot have & | * " `'
+            }}
+          />
         </FormField>
       </Box>);
   }
@@ -148,17 +172,21 @@ export class UserForm extends Component {
             <Field name="lastName" component={renderInput} />
           </FormField>
           <FormField label="Preferred Language" htmlFor="preferredLanguage">
-            <Field name="preferredLanguage" component={renderLanguageSelect} 
+            <Field name="preferredLanguage" component={renderSelect} 
               customProps={{ 
                 onSearch: this._onSearch,
-                options: this.state.languageOptions 
+                options: this.state.languageOptions,
+                allOptions: LANGUAGES,
+                stateKey: 'languageOptions'
               }} />
           </FormField>
           <FormField label="Country / Region of residence" htmlFor="residentCountryCode">
-            <Field name="residentCountryCode" component={renderCountrySelect} 
+            <Field name="residentCountryCode" component={renderSelect} 
               customProps={{ 
                 onSearch: this._onSearch,
-                options: this.state.countryOptions 
+                options: this.state.countryOptions,
+                allOptions: COUNTRIES,
+                stateKey: 'countryOptions'
               }} />
           </FormField>
 
@@ -199,7 +227,8 @@ UserForm = connect(
         label: COUNTRIES.find(objArrayFind.bind(this, state.user.residentCountryCode)).label,
         value: state.user.residentCountryCode
       }
-    }
+    },
+    questions: state.user.questions
   })
 )(UserForm);
 

@@ -151,8 +151,18 @@ export default class Passport {
             }
 
             const { securityQuestions } = soapResponse;
+            let appSecurityQuestions = [];
 
-            resolve(securityQuestions);
+            // This makes it easier to map these to Select components.
+            securityQuestions.forEach(({ id, question }) => {
+              appSecurityQuestions.push({
+                value: id,
+                label: question
+              });
+            });
+
+
+            resolve(appSecurityQuestions);
           } else {
             reject('Error processing request.');
           }
