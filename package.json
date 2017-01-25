@@ -7,7 +7,7 @@
   "license": "",
   "scripts": {
     "test": "grommet check",
-    "dev-server": "nodemon ./server/dev",
+    "dev-server": "NODE_ENV=devserver nodemon ./server/dev",
     "dev": "NODE_ENV=development grommet pack",
     "dist": "grommet pack",
     "dist-server": "babel -d ./dist-server ./server -s",

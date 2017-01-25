@@ -18,9 +18,14 @@ export class UserPage extends Component {
   }
 
   render() {
+    const { pathname } = this.props.location;
+    const title = (pathname === '/register')
+      ? 'Create User'
+      : 'Edit User';
+
     return (
       <Box align="center">
-        <PageMarquee title="Edit User" />
+        <PageMarquee title={title} />
         <UserForm onSubmit={this._onSubmit} />
       </Box>
     );

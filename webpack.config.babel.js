@@ -44,7 +44,7 @@ if (env === 'production') {
   ];
 }
 
-export default Object.assign({
+export const config = Object.assign({
   entry: './src/js/index.js',
   output: {
     path: path.resolve('./dist'),
@@ -79,3 +79,5 @@ export default Object.assign({
     ]
   }
 }, devConfig);
+
+export default config;

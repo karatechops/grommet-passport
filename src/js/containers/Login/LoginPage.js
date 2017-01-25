@@ -53,12 +53,18 @@ export class LoginPage extends Component {
           align="center"
           onSubmit={onSubmitClick}
           rememberMe={true}
-          forgotPassword={
-            <Anchor 
+          forgotPassword={[
+            <Anchor
+              key='loginButton-01'
+              path='/register'
+              label='Create User' 
+            />,
+            <Anchor
+              key='loginButton-02'
               href='#'
               label='Forgot password?' 
             />
-          }
+          ]}
         />
         <Button 
           primary={true}

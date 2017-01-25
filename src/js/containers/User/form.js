@@ -15,10 +15,10 @@ import TextInput from 'grommet/components/TextInput';
 import { LANGUAGES, COUNTRIES } from './constants';
 import { objArrayFind } from '../../utils';
 
-const renderInput = field => (
+const renderInput = props => (
   <TextInput 
-    onDOMChange={param => field.input.onChange(param.target.value)}
-    value={field.input.value} />
+    onDOMChange={param => props.input.onChange(param.target.value)}
+    value={props.input.value} />
 );
 
 const renderLanguageSelect = field => (
@@ -76,18 +76,71 @@ export class UserForm extends Component {
     this.setState(obj);
   }
 
+  _renderNewUserFields() {
+    return (
+      <Box>
+        <Box pad={{ vertical: 'medium' }}>
+          <Heading tag="h3" margin="none">
+            Login Information
+          </Heading>
+        </Box>
+        <FormField label="User ID" htmlFor="userId">
+          <Field name="userId" component={renderInput} />
+        </FormField>
+        <FormField label="Password" htmlFor="password">
+          <Field name="password" component={renderInput} />
+        </FormField>
+        <FormField label="Confrm Password" htmlFor="passwordConfirm">
+          <Field name="passwordConfirm" component={renderInput} />
+        </FormField>
+        <Box pad={{ vertical: 'medium' }}>
+          <Heading tag="h3" margin="none">
+            Forgot Password Information
+          </Heading>
+        </Box>
+        <FormField label="Security Question 1" htmlFor="securityQuestion1">
+          <Field name="securityQuestion1" component={renderInput} />
+        </FormField>
+        <FormField label="Security Answer 1" htmlFor="securityAnswer1">
+          <Field name="securityAnswer1" component={renderInput} />
+        </FormField>
+        <FormField label="Security Question 2" htmlFor="securityQuestion2">
+          <Field name="securityQuestion2" component={renderInput} />
+        </FormField>
+        <FormField label="Security Answer 2" htmlFor="securityAnswer2">
+          <Field name="securityAnswer2" component={renderInput} />
+        </FormField>
+      </Box>);
+  }
+
   render() {
     const { onSubmit } = this.props;
     const { emailAddress } = this.props.initialValues;
 
-    return (
-      <Box pad="medium">
-        <Box pad={{ vertical: 'medium' }}>
+    const emailBlock = (emailAddress)
+      ? <Box pad={{ vertical: 'medium' }}>
           <Heading tag="h3" margin="none">
             Email address <strong>{emailAddress}</strong>
           </Heading>
         </Box>
+      : undefined;
+
+    const newUserFields = (!emailAddress)
+      ? this._renderNewUserFields()
+      : undefined;
+
+    return (
+      <Box pad="medium">
+        {emailBlock}
         <Form onSubmit={onSubmit}>
+          
+          {newUserFields}
+
+          <Box pad={{ vertical: 'medium' }}>
+            <Heading tag="h3" margin="none">
+              Personal Information
+            </Heading>
+          </Box>
           <FormField label="First Name" htmlFor="firstName">
             <Field name="firstName" component={renderInput} />
           </FormField>
@@ -111,13 +164,12 @@ export class UserForm extends Component {
 
           <Box separator="bottom" pad={{ vertical: 'medium' }}>
             <Heading tag="h3" margin="none">
-              Contact Preference
+              Contact Preferences
             </Heading>
           </Box>
-
           <Box direction="row" align="center" pad={{ between: 'medium' }}>
             <Paragraph>
-              Contact by email?
+              May HPE contact you by email?
             </Paragraph>
             <Field name="contactByEmail" component={renderRadioSelect} />
           </Box>

@@ -40,6 +40,7 @@ export const getRoutes = (store) => {
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={Login} onEnter={sessionCheck} />
+        <Route path="/register" component={UserPage} />
       </Route>
       <Route path="/dashboard" component={Dashboard} onEnter={authRequired}>
         <IndexRoute component={DashboardHomePage} />
