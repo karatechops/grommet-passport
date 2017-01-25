@@ -47,9 +47,4 @@ router.post('/user/login', (req, res) => {
     });
 });
 
-// Validate user's session.
-router.post('/user/session/', (req, res) => {
-  console.log('req.body', req.body);
-});
-
 export default router;
