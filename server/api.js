@@ -47,4 +47,15 @@ router.post('/user/login', (req, res) => {
     });
 });
 
+router.get('/user/security-questions', (req, res) => {
+  passport.getSecurityQuestions()
+    .then((data) => {
+      return res.status(200).send({ data });
+    })
+    .catch((err) => {
+      cosole.log('security question error:', err);
+      return res.status(400).send({ error: err });
+    });
+});
+
 export default router;

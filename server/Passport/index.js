@@ -4,7 +4,8 @@ import { parseString } from 'xml2js';
 import { 
   loginBody, 
   detailsBody, 
-  validateSessionBody 
+  validateSessionBody,
+  securityQuestionsBody
 } from './requests';
 
 export default class Passport {
@@ -130,6 +131,35 @@ export default class Passport {
     });
   }
 
+  getSecurityQuestions(applicationId) {
+    return new Promise((resolve, reject) => {
+      const body = securityQuestionsBody(this.passportCreds.appId);
+      const requestParams = this._createReq(this.passportCreds, body);
+
+      request.post(requestParams, (err, soapRes, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        parseString(body, {explicitArray: false}, function (err, result) {
+          if (result && result['SOAP-ENV:Envelope']) {
+            const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getSecurityQuestionsListResponse'];
+            
+            if (soapResponse['exception']) {
+              const errMsg = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getSecurityQuestionsListResponse']['exception']['faults']['faultMessage'];
+              reject(errMsg);
+            }
+
+            const { securityQuestions } = soapResponse;
+
+            resolve(securityQuestions);
+          } else {
+            reject('Error processing request.');
+          }
+        });
+      });
+    });
+  }
 
   isError() {
     // WIP

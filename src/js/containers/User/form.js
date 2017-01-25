@@ -21,35 +21,35 @@ const renderInput = props => (
     value={props.input.value} />
 );
 
-const renderLanguageSelect = field => (
+const renderLanguageSelect = props => (
   <Select placeHolder='Search'
-    options={field.customProps.options}
-    value={field.input.value}
-    onSearch={field.customProps.onSearch.bind(this, LANGUAGES, 'languageOptions')}
-    onChange={param => field.input.onChange(param.value)} />
+    options={props.customProps.options}
+    value={props.input.value}
+    onSearch={props.customProps.onSearch.bind(this, LANGUAGES, 'languageOptions')}
+    onChange={param => props.input.onChange(param.value)} />
 );
 
-const renderCountrySelect = field => (
+const renderCountrySelect = props => (
   <Select placeHolder='Search'
-    options={field.customProps.options}
-    value={field.input.value}
-    onSearch={field.customProps.onSearch.bind(this, COUNTRIES, 'countryOptions')}
-    onChange={param => field.input.onChange(param.value)} />
+    options={props.customProps.options}
+    value={props.input.value}
+    onSearch={props.customProps.onSearch.bind(this, COUNTRIES, 'countryOptions')}
+    onChange={param => props.input.onChange(param.value)} />
 );
 
-const renderRadioSelect = field => (
+const renderRadioSelect = props => (
   <span>
     <RadioButton
       id="id2"
       label="Yes"
-      checked={(field.input.value === 'Y') ? true : false}
-      onChange={param => field.input.onChange('Y')} 
+      checked={(props.input.value === 'Y') ? true : false}
+      onChange={param => props.input.onChange('Y')} 
     />
     <RadioButton
       id="id"
       label="No"
-      checked={(field.input.value === 'N') ? true : false}
-      onChange={param => field.input.onChange('N')} 
+      checked={(props.input.value === 'N') ? true : false}
+      onChange={param => props.input.onChange('N')} 
     />
   </span>
 );

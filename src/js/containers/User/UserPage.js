@@ -5,12 +5,17 @@ import { connect } from 'react-redux';
 import Box from 'grommet/components/Box';
 import PageMarquee from '../../components/PageMarquee';
 import UserForm from './form';
+import { getUserQuestions } from './actions';
 
 export class UserPage extends Component {
   constructor(props) {
     super(props);
 
     this._onSubmit = this._onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.dispatch(getUserQuestions());
   }
 
   _onSubmit(data) {

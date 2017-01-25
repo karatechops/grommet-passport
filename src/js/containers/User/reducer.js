@@ -3,6 +3,7 @@ import * as ActionTypes from './constants';
 const initialState = {
   request: false,
   error: '',
+  errorQuestions: '',
   profileId: '',
   userId: '',
   emailAddress: '',
@@ -14,7 +15,8 @@ const initialState = {
   contactByEmail: 'N',
   contactByMail: 'N',
   contactByPhone: 'N',
-  localizationCode: '2'
+  localizationCode: '2',
+  questions: []
 };
 
 function user(state = initialState, action) {
@@ -32,11 +34,24 @@ function user(state = initialState, action) {
         error: '',
         ...action.user
       };
+    case ActionTypes.USER_QUESTIONS_SUCCESS:
+      return {
+        ...state,
+        request: false,
+        error: '',
+        questions: action.questions
+      };
     case ActionTypes.USER_ERROR:
       return {
         ...state,
         request: false,
         error: action.error
+      };
+    case ActionTypes.USER_QUESTIONS_ERROR:
+      return {
+        ...state,
+        request: false,
+        errorQuestions: action.error
       };
     default:
       return state;
