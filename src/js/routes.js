@@ -8,7 +8,7 @@ import Dashboard from './containers/DashboardPage';
 import DashboardHomePage from './containers/DashboardHomePage';
 
 export const getRoutes = (store) => {
-  /*const authRequired = (nextState, replace) => {
+  const authRequired = (nextState, replace) => {
     const state = store.getState();
 
     if (!state.login.loggedIn) {
@@ -17,17 +17,31 @@ export const getRoutes = (store) => {
         state: {
           nextPathname: nextState.location.pathname
         },
+        pathname: '/'
+      });
+    }
+  };
+
+  const sessionCheck = (nextState, replace) => {
+    const state = store.getState();
+
+    if (state.login.loggedIn) {
+      // User already has a server validated session.
+      replace({
+        state: {
+          nextPathname: nextState.location.pathname
+        },
         pathname: '/dashboard'
       });
     }
-  };*/
+  };
 
   return (
     <Router history={browserHistory}>
       <Route path="/" component={App}>
-        <IndexRoute component={Login} />
+        <IndexRoute component={Login} onEnter={sessionCheck} />
       </Route>
-      <Route path="/dashboard" component={Dashboard}>
+      <Route path="/dashboard" component={Dashboard} onEnter={authRequired}>
         <IndexRoute component={DashboardHomePage} />
         <Route path="user" component={UserPage} />
       </Route>

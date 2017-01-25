@@ -71,10 +71,11 @@ export class LoginPage extends Component {
 };
 
 function mapStateToProps(state, props) {
-  const { request, error } = state.login;
+  const { request, error, sessionId } = state.login;
   return {
     request,
-    error
+    error, 
+    sessionId
   };
 }
 

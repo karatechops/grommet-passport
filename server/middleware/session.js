@@ -3,7 +3,7 @@ import path from 'path';
 import env from 'node-env-file';
 env(path.join(__dirname, '../..', '.env'));
 
-// Instantiate our Passport utility.
+// Instantiate the Passport utility.
 const passport = new Passport({
   url: process.env.PASSPORT_URL,
   username: process.env.PASSPORT_USER,
@@ -12,17 +12,20 @@ const passport = new Passport({
 });
 
 export function isAuthed(req, res, next) {
+  // Get cookie session IDs.
   const sessionId = (req.cookies.GPsessionId || req.cookies.HPPSESSION)
     ? req.cookies.HPPSESSION || GPsessionId
     : undefined;
 
-  if (req.path == '/' && sessionId) {
+  if (sessionId) {
     passport.validateSession(sessionId)
       .then((userId) => {
         passport.userDetails(sessionId)
           .then((user) => {
+            // Add user data to request to fill initial state.
             req.userData = user;
-            console.log('req', req.userData);
+            req.sessionId = sessionId;
+
             return next();
           })
           .catch((err) => 
@@ -30,11 +33,12 @@ export function isAuthed(req, res, next) {
           );
       })
       .catch((err) => {
-        console.log('session validation error:', err);
+        // Session is not valid, proceed as usual.
+        // console.log('session validation error:', err);
         return next();
       });
-    //res.redirect('/dashboard');
   } else {
-    next();
+    // The user's session has not validated, forward to login page.
+    res.redirect('/');
   }
 }

@@ -7,16 +7,27 @@ import path from 'path';
 import { match } from 'react-router';
 import configureStore from '../src/js/store';
 import { getRoutes } from '../src/js/routes';
+import { flattenUser } from './Passport/utils'; 
 
 // Load environment variables
 env(path.join(__dirname, '..', '.env'));
 
 export default function universalRender(req, res) {
-  console.log('render');
+  const user = (req.userData)
+    ? flattenUser(req.userData)
+    : undefined;
+
   const store = configureStore({
     api: {
       url: process.env.API_URL
-    }
+    },
+    login: {
+      request: false,
+      error: '',
+      loggedIn: (req.userData) ? true : false,
+      sessionId: (req.sessionId) ? req.sessionId : ''
+    },
+    user
   });
 
   match({

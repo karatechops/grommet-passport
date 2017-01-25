@@ -45,7 +45,6 @@ app.use('/api', api);
 
 // Session check
 app.use('/', isAuthed, (req, res, next) => {
-  if (req.path == '/' && req.userData) console.log(req.userData);
   next();
 });
 

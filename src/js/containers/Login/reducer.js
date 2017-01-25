@@ -4,8 +4,7 @@ const initialState = {
   request: false,
   error: '',
   loggedIn: false,
-  sessionId: '',
-  user: {}
+  sessionId: ''
 };
 
 function login(state = initialState, action) {
