@@ -87,10 +87,18 @@ export class UserForm extends Component {
           </Heading>
         </Box>
         <FormField label="User ID" htmlFor="userId">
-          <Field name="userId" component={renderInput} />
+          <Field name="userId" component={renderInput} 
+            customProps={{
+              placeHolder: 'Typically your e-mail address.'
+            }}
+          />
         </FormField>
         <FormField label="Password" htmlFor="password">
-          <Field name="password" component={renderInput} />
+          <Field name="password" component={renderInput} 
+            customProps={{
+              placeHolder: 'Minimum 8 letters, numbers and special characters.'
+            }}
+          />
         </FormField>
         <FormField label="Confrm Password" htmlFor="passwordConfirm">
           <Field name="passwordConfirm" component={renderInput} />
@@ -194,6 +202,15 @@ export class UserForm extends Component {
             <Heading tag="h3" margin="none">
               Contact Preferences
             </Heading>
+          </Box>
+          <Box>
+            <Paragraph>
+              HPE occasionally communicates information that may interest you (product, 
+              service, and support information, special offers, or market research 
+              invitations). Before you choose, visit our Online Privacy Statement 
+              to learn how we use automatic data collection tools and your 
+              personal information to tailor your communications.
+            </Paragraph>
           </Box>
           <Box direction="row" align="center" pad={{ between: 'medium' }}>
             <Paragraph>
