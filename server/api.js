@@ -53,7 +53,7 @@ router.get('/user/security-questions', (req, res) => {
       return res.status(200).send({ data });
     })
     .catch((err) => {
-      cosole.log('security question error:', err);
+      console.log('security question error:', err);
       return res.status(400).send({ error: err });
     });
 });

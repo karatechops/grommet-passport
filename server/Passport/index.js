@@ -2,10 +2,10 @@ import request from 'request';
 //import util from 'util';
 import { parseString } from 'xml2js';
 import { 
-  loginBody, 
-  detailsBody, 
-  validateSessionBody,
-  securityQuestionsBody
+  login, 
+  details, 
+  validateSession,
+  securityQuestions
 } from './requests';
 
 export default class Passport {
@@ -38,7 +38,7 @@ export default class Passport {
 
   userLogin({ username, password }) {
     return new Promise((resolve, reject) => {
-      const body = loginBody({ username, password }, this.passportCreds);
+      const body = login({ username, password }, this.passportCreds);
 
       const requestParams = this._createReq(this.passportCreds, body);
 
@@ -68,7 +68,7 @@ export default class Passport {
 
   userDetails(sessionId) {
     return new Promise((resolve, reject) => {
-      const body = detailsBody(sessionId, this.passportCreds);
+      const body = details(sessionId, this.passportCreds);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -103,7 +103,7 @@ export default class Passport {
 
   validateSession(sessionId) {
     return new Promise((resolve, reject) => {
-      const body = validateSessionBody(sessionId, this.passportCreds);
+      const body = validateSession(sessionId, this.passportCreds);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -133,7 +133,7 @@ export default class Passport {
 
   getSecurityQuestions(applicationId) {
     return new Promise((resolve, reject) => {
-      const body = securityQuestionsBody(this.passportCreds.appId);
+      const body = securityQuestions(this.passportCreds.appId);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -160,7 +160,6 @@ export default class Passport {
                 label: question
               });
             });
-
 
             resolve(appSecurityQuestions);
           } else {
