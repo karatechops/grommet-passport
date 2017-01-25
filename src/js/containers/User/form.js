@@ -16,23 +16,27 @@ import { LANGUAGES, COUNTRIES } from './constants';
 import { objArrayFind } from '../../utils';
 
 const renderInput = ({ customProps = {}, input}) => (
-  <TextInput 
-    onDOMChange={param => input.onChange(param.target.value)}
-    value={input.value} 
-    placeHolder={customProps.placeHolder || undefined} />
+  <FormField label={customProps.label} htmlFor={customProps.id}>
+    <TextInput 
+      onDOMChange={param => input.onChange(param.target.value)}
+      value={input.value} 
+      placeHolder={customProps.placeHolder || undefined} />
+  </FormField>
 );
 
-const renderSelect = ({ customProps, input }) => (
-  <Select placeHolder='Search'
-    options={customProps.options}
-    value={input.value || customProps.defaultValue}
-    onSearch={ 
-      (customProps.onSearch)
-        ? customProps.onSearch.bind(
-            this, customProps.allOptions, customProps.stateKey)
-        : undefined
-    }
-    onChange={param => input.onChange(param.value)} />
+const renderSelect = ({ customProps= {}, input }) => (
+  <FormField label={customProps.label} htmlFor={customProps.id}>
+    <Select placeHolder='Search'
+      options={customProps.options}
+      value={input.value || customProps.defaultValue}
+      onSearch={ 
+        (customProps.onSearch)
+          ? customProps.onSearch.bind(
+              this, customProps.allOptions, customProps.stateKey)
+          : undefined
+      }
+      onChange={param => input.onChange(param.value)} />
+  </FormField>
 );
 
 const renderRadioSelect = props => (
@@ -62,10 +66,7 @@ export class UserForm extends Component {
     };
 
     this._onSearch = this._onSearch.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('next', nextProps);
+    this._onSubmit = this._onSubmit.bind(this);
   }
 
   _onSearch(allOptions, key, event) {
@@ -78,6 +79,16 @@ export class UserForm extends Component {
     this.setState(obj);
   }
 
+  _validateData(data) {
+    console.log('data', data);
+
+    return false;
+  }
+
+  _onSubmit(data) {
+    console.log('submit data:', data);
+  }
+
   _renderNewUserFields() {
     return (
       <Box>
@@ -86,67 +97,73 @@ export class UserForm extends Component {
             Login Information
           </Heading>
         </Box>
-        <FormField label="User ID" htmlFor="userId">
-          <Field name="userId" component={renderInput} 
-            customProps={{
-              placeHolder: 'Typically your e-mail address.'
-            }}
-          />
-        </FormField>
-        <FormField label="Password" htmlFor="password">
-          <Field name="password" component={renderInput} 
-            customProps={{
-              placeHolder: 'Minimum 8 letters, numbers and special characters.'
-            }}
-          />
-        </FormField>
-        <FormField label="Confrm Password" htmlFor="passwordConfirm">
-          <Field name="passwordConfirm" component={renderInput} />
-        </FormField>
+        <Field name="userId" component={renderInput} 
+          customProps={{
+            placeHolder: 'Typically your e-mail address.',
+            id: 'userId',
+            label: 'User ID'
+          }}
+        />
+        <Field name="password" component={renderInput} 
+          customProps={{
+            placeHolder: 'Minimum 8 letters, numbers and special characters.',
+            id: 'password',
+            label: 'Password'
+          }}
+        />
+        <Field name="passwordConfirm" component={renderInput} 
+          customProps={{
+            id: 'passwordConfirm',
+            label: 'Confirm Password'
+          }}
+        />
         <Box pad={{ vertical: 'medium' }}>
           <Heading tag="h3" margin="none">
             Forgot Password Information
           </Heading>
         </Box>
-        <FormField label="Security Question 1" htmlFor="securityQuestion1">
-          <Field name="securityQuestion1" component={renderSelect} 
-            customProps={{
-              options: this.props.questions,
-              defaultValue: (this.props.questions.length > 0) 
-                ? this.props.questions[0]
-                : undefined
-            }}
-          />
-        </FormField>
-        <FormField label="Security Answer 1" htmlFor="securityAnswer1">
-          <Field name="securityAnswer1" component={renderInput} 
-            customProps={{
-              placeHolder: 'Security answer cannot have & | * " `'
-            }}
-          />
-        </FormField>
-        <FormField label="Security Question 2" htmlFor="securityQuestion2">
-          <Field name="securityQuestion2" component={renderSelect} 
-            customProps={{
-              options: this.props.questions,
-              defaultValue: (this.props.questions.length > 0) 
-                ? this.props.questions[1]
-                : undefined
-            }}
-          />
-        </FormField>
-        <FormField label="Security Answer 2" htmlFor="securityAnswer2">
-          <Field name="securityAnswer2" component={renderInput} 
-            customProps={{
-              placeHolder: 'Security answer cannot have & | * " `'
-            }}
-          />
-        </FormField>
+        <Field name="securityQuestion1" component={renderSelect} 
+          customProps={{
+            id: 'securityQuestion1',
+            label: 'Security Question 1',
+            options: this.props.questions,
+            defaultValue: (this.props.questions.length > 0) 
+              ? this.props.questions[0]
+              : undefined
+          }}
+        />
+        <Field name="securityAnswer1" component={renderInput} 
+          customProps={{
+            placeHolder: 'Security answer cannot have & | * " `',
+            id: 'securityAnswer1',
+            label: 'Security Answer 1'
+          }}
+        />
+        <Field name="securityQuestion2" component={renderSelect} 
+          customProps={{
+            id: 'securityQuestion2',
+            label: 'Security Question 2',
+            options: this.props.questions,
+            defaultValue: (this.props.questions.length > 0) 
+              ? this.props.questions[1]
+              : undefined
+          }}
+        />
+        <Field name="securityAnswer2" component={renderInput} 
+          customProps={{
+            placeHolder: 'Security answer cannot have & | * " `',
+            id: 'securityAnswer2',
+            label: 'Security Answer 2'
+          }}
+        />
       </Box>);
   }
 
   render() {
-    const { onSubmit } = this.props;
+    const onSubmit = (this._validateData(this.props.form.user))
+      ? this.props.handleSubmit(this._onSubmit)
+      : undefined;
+
     const { emailAddress } = this.props.initialValues;
 
     const emailBlock = (emailAddress)
@@ -173,30 +190,44 @@ export class UserForm extends Component {
               Personal Information
             </Heading>
           </Box>
-          <FormField label="First Name" htmlFor="firstName">
-            <Field name="firstName" component={renderInput} />
-          </FormField>
-          <FormField label="Last Name" htmlFor="lastName">
-            <Field name="lastName" component={renderInput} />
-          </FormField>
-          <FormField label="Preferred Language" htmlFor="preferredLanguage">
-            <Field name="preferredLanguage" component={renderSelect} 
-              customProps={{ 
-                onSearch: this._onSearch,
-                options: this.state.languageOptions,
-                allOptions: LANGUAGES,
-                stateKey: 'languageOptions'
-              }} />
-          </FormField>
-          <FormField label="Country / Region of residence" htmlFor="residentCountryCode">
-            <Field name="residentCountryCode" component={renderSelect} 
-              customProps={{ 
-                onSearch: this._onSearch,
-                options: this.state.countryOptions,
-                allOptions: COUNTRIES,
-                stateKey: 'countryOptions'
-              }} />
-          </FormField>
+          <Field name="firstName" component={renderInput} 
+            customProps={{
+              id: 'firstName',
+              label: 'First Name'
+            }}
+          />
+          <Field name="lastName" component={renderInput} 
+            customProps={{
+              id: 'lastName',
+              label: 'Last Name'
+            }}
+          />
+          <Field name="emailAddress" component={renderInput} 
+            customProps={{
+              id: 'emailAddress',
+              label: 'Email Address'
+            }}
+          />
+          <Field name="preferredLanguage" component={renderSelect} 
+            customProps={{ 
+              id: 'preferredLanguage',
+              label: 'Preferred Language',
+              onSearch: this._onSearch,
+              options: this.state.languageOptions,
+              allOptions: LANGUAGES,
+              stateKey: 'languageOptions'
+            }} 
+          />
+          <Field name="residentCountryCode" component={renderSelect} 
+            customProps={{ 
+              id: 'residentCountryCode',
+              label: 'Country / Region of residence',
+              onSearch: this._onSearch,
+              options: this.state.countryOptions,
+              allOptions: COUNTRIES,
+              stateKey: 'countryOptions'
+            }} 
+          />
 
           <Box separator="bottom" pad={{ vertical: 'medium' }}>
             <Heading tag="h3" margin="none">
@@ -235,7 +266,15 @@ UserForm = reduxForm({
 UserForm = connect(
   state => ({
     initialValues: {
-      ...state.user,
+      contactByEmail: state.user.contactByEmail,
+      contactByMail: state.user.contactByMail,
+      contactByPhone: state.user.contactByPhone,
+      firstName: state.user.firstName,
+      lastName: state.user.lastName,
+      localizationCode: state.user.localizationCode,
+      preferredLanguage: state.user.preferredLanguage,
+      residentCountryCode: state.user.residentCountryCode,
+      securityLevel: state.user.securityLevel,
       preferredLanguage: {
         label: LANGUAGES.find(objArrayFind.bind(this, state.user.preferredLanguage)).label,
         value: state.user.preferredLanguage
@@ -245,7 +284,8 @@ UserForm = connect(
         value: state.user.residentCountryCode
       }
     },
-    questions: state.user.questions
+    questions: state.user.questions,
+    request: state.user.request
   })
 )(UserForm);
 

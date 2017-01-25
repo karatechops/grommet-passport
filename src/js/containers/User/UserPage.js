@@ -10,16 +10,10 @@ import { getUserQuestions } from './actions';
 export class UserPage extends Component {
   constructor(props) {
     super(props);
-
-    this._onSubmit = this._onSubmit.bind(this);
   }
 
   componentDidMount() {
     this.props.dispatch(getUserQuestions());
-  }
-
-  _onSubmit(data) {
-    console.log(data);
   }
 
   render() {
@@ -31,7 +25,7 @@ export class UserPage extends Component {
     return (
       <Box align="center">
         <PageMarquee title={title} />
-        <UserForm onSubmit={this._onSubmit} />
+        <UserForm />
       </Box>
     );
   }

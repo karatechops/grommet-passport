@@ -29,6 +29,10 @@ export const userError = (error) => ({
   error
 });
 
+export function userCreate(data) {
+  console.log(data);
+}
+
 export function getUserQuestions() {
   return (dispatch, getState) => {
     const { url } = getState().api;
