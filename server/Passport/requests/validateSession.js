@@ -1,4 +1,4 @@
-export const validateSessionBody = (sessionId, { appId }) => 
+export const validateSession = (sessionId, { appId }) => 
   `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:pas="http://hppws.globalops.hp.com/Passport">\
      <soapenv:Header/>\
      <soapenv:Body>\

@@ -97,7 +97,7 @@ export function getUserQuestions() {
 
     dispatch(userRequest());
 
-    fetch(`${url}/user/security-questions`, {
+    return fetch(`${url}/user/security-questions`, {
       method: 'GET',
       credentials: 'include',
       headers: new Headers({

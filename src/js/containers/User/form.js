@@ -23,6 +23,7 @@ const renderInput = ({ customProps = {}, input, meta }) => (
       onDOMChange={param => input.onChange(param.target.value)}
       value={input.value} 
       placeHolder={customProps.placeHolder || undefined} 
+      type={(customProps.password) ? 'password' : 'text'}
     />
   </FormField>
 );
@@ -205,13 +206,15 @@ export class UserForm extends Component {
           customProps={{
             placeHolder: 'Minimum 8 letters, numbers and special characters.',
             id: 'password',
-            label: 'Password'
+            label: 'Password',
+            password: true
           }}
         />
         <Field name="passwordConfirm" component={renderInput} 
           customProps={{
             id: 'passwordConfirm',
-            label: 'Confirm Password'
+            label: 'Confirm Password',
+            password: true
           }}
         />
         <Box pad={{ vertical: 'medium' }}>

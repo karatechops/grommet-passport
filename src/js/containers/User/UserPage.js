@@ -9,6 +9,10 @@ import UserForm from './form';
 import { getUserQuestions } from './actions';
 
 export class UserPage extends Component {
+  static fetchData() {
+    return getUserQuestions();
+  }
+
   constructor(props) {
     super(props);
   }
@@ -27,7 +31,8 @@ export class UserPage extends Component {
     // is rendered. Maybe these questions can be static? It seems
     // like an extreneous request to gather this every form 
     // page request.
-    const form = (this.props.user.questions.length > 0)
+    const { questions } = this.props.user;
+    const form = ( Array.isArray(questions) && questions.length > 0)
       ? <UserForm />
       : <Box direction="row" 
           pad={{ 

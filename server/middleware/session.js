@@ -11,7 +11,7 @@ const passport = new Passport({
   appId: process.env.PASSPORT_APP_ID
 });
 
-export function isAuthed(req, res, next) {
+export function isAuthed(req, res, next) { // eslint-disable-line consistent-return
   // Get cookie session IDs.
   const sessionId = (req.cookies.GPsessionId || req.cookies.HPPSESSION)
     ? req.cookies.HPPSESSION || GPsessionId
@@ -26,19 +26,20 @@ export function isAuthed(req, res, next) {
             req.userData = user;
             req.sessionId = sessionId;
 
+
             return next();
           })
-          .catch((err) => 
-            res.status(400).send({ error: err })
-          );
+          .catch((err) => {
+            console.log('session validation error:', err);
+            return res.status(400).send({ error: err });
+          });
       })
       .catch((err) => {
         // Session is not valid, proceed as usual.
-        // console.log('session validation error:', err);
+        console.log('session validation error:', err);
         return next();
       });
   } else {
-    // The user's session has not validated, forward to login page.
-    res.redirect('/');
+    return next();
   }
 }

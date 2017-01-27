@@ -17,7 +17,7 @@ export default function universalRender(req, res) {
     ? flattenUser(req.userData)
     : undefined;
 
-  const store = configureStore({
+  const storeConfig = {
     api: {
       url: process.env.API_URL
     },
@@ -26,9 +26,16 @@ export default function universalRender(req, res) {
       error: '',
       loggedIn: (req.userData) ? true : false,
       sessionId: (req.sessionId) ? req.sessionId : ''
-    },
-    user
-  });
+    }
+  };
+
+  if (user)
+    storeConfig.user = {
+      ...user,
+      questions: []
+    };
+
+  const store = configureStore(storeConfig);
 
   match({
     routes: getRoutes(store),
@@ -52,15 +59,12 @@ export default function universalRender(req, res) {
         return false;
       }
 
-      const title = (renderProps.params.title)
-        ? renderProps.params.title
-        : null;
-
-      return store.dispatch(component.fetchData(title));
+      return store.dispatch(component.fetchData());
     });
 
     Promise.all(promises).then(() => {
       const initialState = JSON.stringify(store.getState());
+      console.log(initialState);
       const InitialComponent = (
         <Provider store={store}>
           <RouterContext {...renderProps} />
