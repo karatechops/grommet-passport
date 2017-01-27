@@ -65,8 +65,7 @@ export class UserForm extends Component {
 
     this.state = {
       languageOptions: LANGUAGES,
-      countryOptions: COUNTRIES,
-      edit: false
+      countryOptions: COUNTRIES
     };
 
     this._onSearch = this._onSearch.bind(this);

@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router';
+import cookie from 'react-cookie';
 import * as ActionTypes from './constants';
 import { loginSuccess } from '../Login/actions';
 
@@ -7,7 +8,6 @@ export const userRequest = () => ({
 });
 
 export const userSuccess = (user) => {
-  //const user = flattenUser(passportUser);
   return {
     type: ActionTypes.USER_SUCCESS,
     user 
@@ -72,8 +72,15 @@ export function userCreate(data) {
           contactByEmail
         };
 
-        console.log('user', user);
         // The server automatically logs in a user when a profile is created.
+        // Set session ID in cookie.
+        const { sessionId } = json;
+        cookie.save('GPsessionId', sessionId, { path: '/' });
+        
+        // Adding the following cookie for testing purposes. This is to simulate the 
+        // cookie the login with digital badge feature uses.
+        cookie.save('HPPSESSION', sessionId, { path: '/' });
+
         dispatch(loginSuccess({ sessionId: json.sessionId }));
         dispatch(userSuccess(user));
         return browserHistory.push('/dashboard');
