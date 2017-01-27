@@ -30,7 +30,54 @@ export const userError = (error) => ({
 });
 
 export function userCreate(data) {
-  console.log(data);
+  return(dispatch, getState) => {
+    const { url } = getState().api;
+    dispatch(userRequest());
+
+    fetch(`${url}/user/create`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify(data)
+    })
+      .then((response) =>
+        response.json().then((json) => ({
+          status: response.status,
+          statusText: response.statusText,
+          json
+        }))
+      )
+      .then(({ status, statusText, json }) => {
+        if (status >= 400) {
+          const error = json.error || 'There was an error processing your request.';
+          return dispatch(userError(error));
+        }
+
+        // Passport only returns profile ID, user ID, and email upon user creating
+        // we can fill in the gaps with our form state.
+        const { 
+          firstName, lastName, preferredLanguage, residentCountryCode, 
+          contactByEmail 
+        } = data;
+        const user = {
+          profileId: json.profileId,
+          userId: json.userId,
+          emailAddress: json.emailAddress,
+          firstName,
+          lastName, 
+          preferredLanguage, 
+          residentCountryCode, 
+          contactByEmail
+        };
+
+        return dispatch(userSuccess(user));
+      }, (err) => {
+        return dispatch(userError('There was an error processing your request.'));
+      }
+    );
+  };
 }
 
 export function getUserQuestions() {

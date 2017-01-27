@@ -47,6 +47,19 @@ router.post('/user/login', (req, res) => {
     });
 });
 
+// Create user
+router.post('/user/create', (req, res) => {
+  passport.userCreate(req.body)
+    .then((data) => {
+      console.log('passport response:', data);
+      return res.status(400).send(data);
+    })
+    .catch((err) => {
+      console.log('create user error:', err);
+      return res.status(400).send({ error: err});
+    });
+});
+
 router.get('/user/security-questions', (req, res) => {
   passport.getSecurityQuestions()
     .then((data) => {

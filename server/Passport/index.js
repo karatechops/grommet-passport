@@ -1,7 +1,8 @@
 import request from 'request';
-//import util from 'util';
+import util from 'util';
 import { parseString } from 'xml2js';
-import { 
+import {
+  createUser,
   login, 
   details, 
   validateSession,
@@ -101,6 +102,40 @@ export default class Passport {
     });
   }
 
+  userCreate(user) {
+    return new Promise((resolve, reject) => {
+      const body = createUser(user, this.passportCreds);
+      const requestParams = this._createReq(this.passportCreds, body);
+
+      request.post(requestParams, (err, soapRes, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        parseString(body, {explicitArray: false}, function (err, result) {
+          if (result && result['SOAP-ENV:Envelope']) {
+            const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:createUserResponse'];
+            console.log(util.inspect(soapResponse, false, null));
+            
+            //if (soapResponse['exception']) 
+              //this.throwError(soapResponse['exception'], reject);
+            if (soapResponse['exception']) {
+              if (Array.isArray(soapResponse['exception']['faults']))
+                reject(soapResponse['exception']['faults'][0]['faultMessage']);
+              else
+                reject(soapResponse['exception']['faults']['faultMessage']);
+            }
+
+            const userDetails = soapResponse['profileIdentity'];
+            resolve(userDetails);
+          } else {
+            reject('Error processing request.');
+          }
+        });
+      });
+    });
+  }
+
   validateSession(sessionId) {
     return new Promise((resolve, reject) => {
       const body = validateSession(sessionId, this.passportCreds);
@@ -168,10 +203,5 @@ export default class Passport {
         });
       });
     });
-  }
-
-  isError() {
-    // WIP
-    return('no');
   }
 }

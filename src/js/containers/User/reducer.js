@@ -12,7 +12,7 @@ const initialState = {
   preferredLanguage: 'en',
   residentCountryCode: 'US',
   securityLevel: '0',
-  contactByEmail: 'N',
+  contactByEmail: 'Y',
   contactByMail: 'N',
   contactByPhone: 'N',
   localizationCode: '2',

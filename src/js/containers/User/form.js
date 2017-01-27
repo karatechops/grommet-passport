@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 
 import Box from 'grommet/components/Box';
@@ -12,19 +12,22 @@ import Paragraph from 'grommet/components/Paragraph';
 import RadioButton from 'grommet/components/RadioButton';
 import Select from 'grommet/components/Select';
 import TextInput from 'grommet/components/TextInput';
+import { userCreate } from './actions';
 import { LANGUAGES, COUNTRIES } from './constants';
-import { objArrayFind } from '../../utils';
+import { objArrayFind, validEmail } from '../../utils';
 
-const renderInput = ({ customProps = {}, input}) => (
-  <FormField label={customProps.label} htmlFor={customProps.id}>
+const renderInput = ({ customProps = {}, input, meta }) => (
+  <FormField label={customProps.label} htmlFor={customProps.id} 
+      error={meta.error}>
     <TextInput 
       onDOMChange={param => input.onChange(param.target.value)}
       value={input.value} 
-      placeHolder={customProps.placeHolder || undefined} />
+      placeHolder={customProps.placeHolder || undefined} 
+    />
   </FormField>
 );
 
-const renderSelect = ({ customProps= {}, input }) => (
+const renderSelect = ({ customProps= {}, input, meta: { touched, error } }) => (
   <FormField label={customProps.label} htmlFor={customProps.id}>
     <Select placeHolder='Search'
       options={customProps.options}
@@ -79,14 +82,108 @@ export class UserForm extends Component {
     this.setState(obj);
   }
 
-  _validateData(data) {
-    console.log('data', data);
-
-    return false;
-  }
-
   _onSubmit(data) {
-    console.log('submit data:', data);
+    if (!data.userId) {
+      throw new SubmissionError({ 
+        userId: 'Required',
+        _error: 'Required fields empty.'
+      });
+    } else if (data.userId.length < 5) {
+      throw new SubmissionError({ 
+        userId: 'Must be 5 characters or more',
+        _error: 'User ID error.'
+      });
+    }
+
+    if (!data.password) {
+      throw new SubmissionError({ 
+        password: 'Required',
+        _error: 'Required fields empty.'
+      });
+    } else if (data.password.length < 8) {
+      throw new SubmissionError({ 
+        password: 'Minimum 8 characters',
+        _error: 'Required fields empty.'
+      });
+    };
+
+    if (!data.passwordConfirm) {
+      throw new SubmissionError({ 
+        passwordConfirm: 'Required',
+        _error: 'Required fields empty.'
+      });
+    } else if (data.passwordConfirm.length < 8) {
+      throw new SubmissionError({ 
+        passwordConfirm: 'Minimum 8 characters',
+        _error: 'Required fields empty.'
+      });
+    } else if (data.passwordConfirm !== data.password) {
+      throw new SubmissionError({ 
+        passwordConfirm: 'Password does not match',
+        _error: 'Passwords do not match.'
+      });
+    };
+
+    if (data.securityQuestion1.value === data.securityQuestion2.value) {
+      throw new SubmissionError({ 
+        securityQuestion2: 'Choose a different question.',
+        _error: 'Security questions cannot be the same.'
+      });
+    }
+
+    const invalidChars = /[&|*"`]+/;
+    
+    if (!data.securityAnswer1) {
+      throw new SubmissionError({ 
+        securityAnswer1: 'Required',
+        _error: 'Required fields empty.'
+      });
+    } else if (invalidChars.test(data.securityAnswer1)) {
+      throw new SubmissionError({ 
+        securityAnswer1: 'Security answer cannot have & | * " `',
+        _error: 'Invalid security answer.'
+      });
+    }
+
+    if (!data.securityAnswer2) {
+      throw new SubmissionError({ 
+        securityAnswer2: 'Required',
+        _error: 'Required fields empty.'
+      });
+    } else if (invalidChars.test(data.securityAnswer2)) {
+      throw new SubmissionError({ 
+        securityAnswer2: 'Security answer cannot have & | * " `',
+        _error: 'Invalid security answer.'
+      });
+    }
+
+    if (!data.firstName) {
+      throw new SubmissionError({ 
+        firstName: 'Required',
+        _error: 'Required fields empty.'
+      });
+    }
+
+    if (!data.lastName) {
+      throw new SubmissionError({ 
+        lastName: 'Required',
+        _error: 'Required fields empty.'
+      });
+    }
+
+    if (!data.emailAddress) {
+      throw new SubmissionError({ 
+        emailAddress: 'Required',
+        _error: 'Required fields empty.'
+      });
+    } else if (!validEmail(data.emailAddress)) {
+      throw new SubmissionError({ 
+        emailAddress: 'Invalid email',
+        _error: 'Email address invalid.'
+      });
+    }
+
+    this.props.dispatch(userCreate(data));
   }
 
   _renderNewUserFields() {
@@ -160,9 +257,7 @@ export class UserForm extends Component {
   }
 
   render() {
-    const onSubmit = (this._validateData(this.props.form.user))
-      ? this.props.handleSubmit(this._onSubmit)
-      : undefined;
+    const onSubmit = this.props.handleSubmit(this._onSubmit);
 
     const { emailAddress } = this.props.initialValues;
 
@@ -176,6 +271,16 @@ export class UserForm extends Component {
 
     const newUserFields = (!emailAddress)
       ? this._renderNewUserFields()
+      : undefined;
+
+    const error = (this.props.error || this.props.requestError)
+      ? <Box style=
+          {{
+            color: '#f04953'
+          }}
+        >
+          {this.props.error || this.props.requestError}
+        </Box>
       : undefined;
 
     return (
@@ -250,7 +355,11 @@ export class UserForm extends Component {
             <Field name="contactByEmail" component={renderRadioSelect} />
           </Box>
 
-          <Footer pad={{ vertical: 'medium' }}>
+          <Footer 
+            pad={{ vertical: 'medium', between: 'small' }} 
+            direction="column"
+            align="start">
+            {error}
             <Button primary={true} label="Submit" onClick={onSubmit} />
           </Footer>
         </Form>
@@ -282,10 +391,19 @@ UserForm = connect(
       residentCountryCode: {
         label: COUNTRIES.find(objArrayFind.bind(this, state.user.residentCountryCode)).label,
         value: state.user.residentCountryCode
+      },
+      securityQuestion1: {
+        label: state.user.questions[0].label,
+        value: state.user.questions[0].value
+      },
+      securityQuestion2: {
+        label: state.user.questions[1].label,
+        value: state.user.questions[1].value
       }
     },
     questions: state.user.questions,
-    request: state.user.request
+    request: state.user.request,
+    requestError: state.user.error
   })
 )(UserForm);
 
