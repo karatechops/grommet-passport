@@ -1,5 +1,5 @@
 import request from 'request';
-import util from 'util';
+//import util from 'util';
 import { parseString } from 'xml2js';
 import {
   createUser,
@@ -37,6 +37,13 @@ export default class Passport {
     return request;
   }
 
+  _parseError(soapResponse) {
+    if (Array.isArray(soapResponse['faults']))
+      return soapResponse['faults'][0]['faultMessage'];
+    else
+      return soapResponse['faults']['faultMessage'];
+  }
+
   userLogin({ username, password }) {
     return new Promise((resolve, reject) => {
       const body = login({ username, password }, this.passportCreds);
@@ -48,14 +55,12 @@ export default class Passport {
           reject(err);
         }
 
-        parseString(body, {explicitArray: false}, function (err, result) {
+        parseString(body, {explicitArray: false}, (err, result) => {
           if (result && result['SOAP-ENV:Envelope']) {
             const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:loginResponse'];
             
-            if (soapResponse['exception']) {
-              const errMsg = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:loginResponse']['exception']['faults']['faultMessage'];
-              reject(errMsg);
-            }
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
 
             const { sessionToken } = soapResponse;
             resolve(sessionToken);
@@ -77,15 +82,12 @@ export default class Passport {
           reject(err);
         }
 
-        parseString(body, {explicitArray: false}, function (err, result) {
+        parseString(body, {explicitArray: false}, (err, result) => {
           if (result && result['SOAP-ENV:Envelope']) {
             const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getUserResponse'];
-            //console.log(util.inspect(soapResponse, false, null));
             
-            if (soapResponse['exception']) {
-              const errMsg = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getUserResponse']['exception']['faults']['faultMessage'];
-              reject(errMsg);
-            }
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
 
             const userDetails = { 
               sessionId,
@@ -112,19 +114,12 @@ export default class Passport {
           reject(err);
         }
 
-        parseString(body, {explicitArray: false}, function (err, result) {
+        parseString(body, {explicitArray: false}, (err, result) => {
           if (result && result['SOAP-ENV:Envelope']) {
             const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:createUserResponse'];
-            console.log(util.inspect(soapResponse, false, null));
-            
-            //if (soapResponse['exception']) 
-              //this.throwError(soapResponse['exception'], reject);
-            if (soapResponse['exception']) {
-              if (Array.isArray(soapResponse['exception']['faults']))
-                reject(soapResponse['exception']['faults'][0]['faultMessage']);
-              else
-                reject(soapResponse['exception']['faults']['faultMessage']);
-            }
+
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
 
             const userDetails = soapResponse['profileIdentity'];
             resolve(userDetails);
@@ -146,14 +141,12 @@ export default class Passport {
           reject(err);
         }
 
-        parseString(body, {explicitArray: false}, function (err, result) {
+        parseString(body, {explicitArray: false}, (err, result) => {
           if (result && result['SOAP-ENV:Envelope']) {
             const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:validateSessionResponse'];
             
-            if (soapResponse['exception']) {
-              const errMsg = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:validateSessionResponse']['exception']['faults']['faultMessage'];
-              reject(errMsg);
-            }
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
 
             const { userId } = soapResponse;
 
@@ -176,14 +169,12 @@ export default class Passport {
           reject(err);
         }
 
-        parseString(body, {explicitArray: false}, function (err, result) {
+        parseString(body, {explicitArray: false}, (err, result) => {
           if (result && result['SOAP-ENV:Envelope']) {
             const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getSecurityQuestionsListResponse'];
             
-            if (soapResponse['exception']) {
-              const errMsg = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getSecurityQuestionsListResponse']['exception']['faults']['faultMessage'];
-              reject(errMsg);
-            }
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
 
             const { securityQuestions } = soapResponse;
             let appSecurityQuestions = [];
