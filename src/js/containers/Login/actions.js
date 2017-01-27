@@ -51,7 +51,7 @@ export function login(user) {
         }
 
         // Set session ID in cookie.
-        const { sessionId } = json;
+        const { sessionId, user } = json;
         cookie.save('GPsessionId', sessionId, { path: '/' });
         
         // Adding the following cookie for testing purposes. This is to simulate the 
@@ -59,7 +59,7 @@ export function login(user) {
         cookie.save('HPPSESSION', sessionId, { path: '/' });
 
         dispatch(loginSuccess(json));
-        dispatch(UserActions.userSuccess(json));
+        dispatch(UserActions.userSuccess(user));
         return browserHistory.push('/dashboard');
       }, (err) => {
         dispatch(loginError('There was an error processing your request.'));

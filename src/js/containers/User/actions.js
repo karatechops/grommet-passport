@@ -1,13 +1,13 @@
+import { browserHistory } from 'react-router';
 import * as ActionTypes from './constants';
-// Passport should have a webpack alias.
-import { flattenUser } from '../../../../server/Passport/utils';
+import { loginSuccess } from '../Login/actions';
 
 export const userRequest = () => ({ 
   type: ActionTypes.USER_REQUEST
 });
 
-export const userSuccess = (passportUser) => {
-  const user = flattenUser(passportUser);
+export const userSuccess = (user) => {
+  //const user = flattenUser(passportUser);
   return {
     type: ActionTypes.USER_SUCCESS,
     user 
@@ -55,11 +55,11 @@ export function userCreate(data) {
           return dispatch(userError(error));
         }
 
+        console.log('json',json);
         // Passport only returns profile ID, user ID, and email upon user creating
         // we can fill in the gaps with our form state.
         const { 
-          firstName, lastName, preferredLanguage, residentCountryCode, 
-          contactByEmail 
+          firstName, lastName, contactByEmail 
         } = data;
         const user = {
           profileId: json.profileId,
@@ -67,12 +67,16 @@ export function userCreate(data) {
           emailAddress: json.emailAddress,
           firstName,
           lastName, 
-          preferredLanguage, 
-          residentCountryCode, 
+          preferredLanguage: data.preferredLanguage.value, 
+          residentCountryCode: data.residentCountryCode.value, 
           contactByEmail
         };
 
-        return dispatch(userSuccess(user));
+        console.log('user', user);
+        // The server automatically logs in a user when a profile is created.
+        dispatch(loginSuccess({ sessionId: json.sessionId }));
+        dispatch(userSuccess(user));
+        return browserHistory.push('/dashboard');
       }, (err) => {
         return dispatch(userError('There was an error processing your request.'));
       }

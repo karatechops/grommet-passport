@@ -22,8 +22,7 @@ function login(state = initialState, action) {
         request: false,
         loggedIn: true,
         error: '',
-        sessionId: sessionId,
-        user: action.user
+        sessionId: sessionId
       };
     case ActionTypes.LOGIN_ERROR:
       return {

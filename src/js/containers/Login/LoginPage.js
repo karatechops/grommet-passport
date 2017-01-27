@@ -15,14 +15,14 @@ export class LoginPage extends Component {
     super(props);
 
     this.state = {
-      error: ''
+      error: []
     };
 
     this._onSubmitClick = this._onSubmitClick.bind(this);
   }
 
   componentWillReceiveProps({ request, error}) {
-    this.setState({ error });
+    this.setState({ error: [error] });
   }
 
   _onSubmitClick({username, password, rememberMe}) {
@@ -53,6 +53,7 @@ export class LoginPage extends Component {
           align="center"
           onSubmit={onSubmitClick}
           rememberMe={true}
+          errors={this.state.error}
           forgotPassword={[
             <Anchor
               key='loginButton-01'

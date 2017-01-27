@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import Passport from './Passport';
+import { flattenUser } from './Passport/utils';
 
 // Environment variables.
 // We import these here as well as server.js to make sure we 
@@ -35,7 +36,10 @@ router.post('/user/login', (req, res) => {
     .then((sessionId) => {
       passport.userDetails(sessionId)
         .then((data) => {
-          return res.status(200).send(data);
+          return res.status(200).send({
+            user: flattenUser(data),
+            sessionId
+          });
         })
         .catch((err) => 
           res.status(400).send({ error: err })
@@ -51,8 +55,25 @@ router.post('/user/login', (req, res) => {
 router.post('/user/create', (req, res) => {
   passport.userCreate(req.body)
     .then((data) => {
-      console.log('passport response:', data);
-      return res.status(400).send(data);
+      const reqCreds = {
+        username: req.body.userId,
+        password: req.body.password
+      };
+      passport.userLogin(reqCreds)
+        .then((sessionId) => {
+          console.log('logged in', sessionId, data);
+          return res.status(200).send({
+            ...data,
+            sessionId
+          });
+        })
+        .catch((err) => {
+          console.log('login error:', err);
+          return res.status(400).send({ error: err });
+        });
+
+      //console.log('passport response:', data);
+      //return res.status(400).send(data);
     })
     .catch((err) => {
       console.log('create user error:', err);

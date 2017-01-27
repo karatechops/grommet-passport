@@ -65,7 +65,8 @@ export class UserForm extends Component {
 
     this.state = {
       languageOptions: LANGUAGES,
-      countryOptions: COUNTRIES
+      countryOptions: COUNTRIES,
+      edit: false
     };
 
     this._onSearch = this._onSearch.bind(this);
@@ -258,18 +259,18 @@ export class UserForm extends Component {
 
   render() {
     const onSubmit = this.props.handleSubmit(this._onSubmit);
-
     const { emailAddress } = this.props.initialValues;
+    const { userId } = this.props;
 
     const emailBlock = (emailAddress)
       ? <Box pad={{ vertical: 'medium' }}>
           <Heading tag="h3" margin="none">
-            Email address <strong>{emailAddress}</strong>
+            User ID <strong>{emailAddress}</strong>
           </Heading>
         </Box>
       : undefined;
 
-    const newUserFields = (!emailAddress)
+    const newUserFields = (!userId)
       ? this._renderNewUserFields()
       : undefined;
 
@@ -380,6 +381,7 @@ UserForm = connect(
       contactByPhone: state.user.contactByPhone,
       firstName: state.user.firstName,
       lastName: state.user.lastName,
+      emailAddress: state.user.emailAddress,
       localizationCode: state.user.localizationCode,
       preferredLanguage: state.user.preferredLanguage,
       residentCountryCode: state.user.residentCountryCode,
@@ -403,7 +405,8 @@ UserForm = connect(
     },
     questions: state.user.questions,
     request: state.user.request,
-    requestError: state.user.error
+    requestError: state.user.error,
+    userId: state.user.userId
   })
 )(UserForm);
 
