@@ -92,4 +92,32 @@ router.get('/user/security-questions', (req, res) => {
     });
 });
 
+router.post('/user/forgot-id', (req, res) => {
+  const email = req.body.email;
+
+  passport.getUserId(email)
+    .then((userId) => {
+      // Passport API uses $userId$ to insert the user's ID.
+      const msg = {
+        to: email,
+        from: 'passport@hpe.com',
+        replyTo: 'passport@hpe.com',
+        subject: 'Passport - User ID Recovery',
+        body: 'Here\'s your requested user ID: $userId$'
+      };
+
+      passport.sendEmail(msg, userId)
+        .then((data) => {
+          return res.status(200).send({ data });
+        })
+        .catch((err) =>{
+          console.log('send email error:', err);
+          return res.status(400).send({error: err});
+        });
+    }).catch((err) => {
+      console.log('get user id error:', err);
+      return res.status(400).send({ error: err });
+    });;
+});
+
 export default router;
