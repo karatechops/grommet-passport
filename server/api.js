@@ -117,7 +117,62 @@ router.post('/user/forgot-id', (req, res) => {
     }).catch((err) => {
       console.log('get user id error:', err);
       return res.status(400).send({ error: err });
-    });;
+    });
+});
+
+// Test GUID route. To be removed...
+router.get('/user/guid', (req, res) => {
+  const guid = 'ff5be85b-45ea-4fc0-9d93-a0a5b303f768';
+  passport.getGuidExp(guid)
+    .then((data) => {
+      console.log('data:', data);
+    })
+    .catch((err) => {
+      console.log('GUID error:', err);
+    });
+});
+
+
+// Send password reset link to user.
+router.get('/user/reset-password', (req, res) => {
+  const email = 'contact@lazers.tv';
+  const msg = {
+    to: email,
+    from: 'passport@hpe.com',
+    replyTo: 'passport@hpe.com',
+    subject: 'Passport - Password Reset',
+    body: 'your GUID: $guid$'
+  };
+
+  passport.sendPasswordReset(msg)
+    .then((data) => res.status(200).send({ data }))
+    .catch((err) => {
+      console.log('Send password reset error:', err);
+      return res.status(400).send({ error: err });
+    });
+});
+
+// Password reset link. Validates GUID before attempting to change password.
+// Default Passport GUID expiration is 7 days.
+router.get('/user/reset-password/:guid', (req, res) => {
+  const guid = req.params.guid || 'ff5be85b-45ea-4fc0-9d93-a0a5b303f768';
+
+  passport.getGuidExp(guid)
+    .then((data) => {
+      const user = {
+        userId: data.userId,
+        password: '3scap3ss',
+        passwordConfirm: '3scap3ss'
+      };
+
+      passport.changePassword(guid, user)
+        .then((changeData) => res.status(200).send({ data: changeData }))
+        .catch((err) => res.status(400).send({ error: err }));
+    })
+    .catch((err) => {
+      console.log('GUID error:', err);
+      return res.status(400).send({ error: err });
+    });
 });
 
 export default router;

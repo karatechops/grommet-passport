@@ -1,6 +1,9 @@
 export { createUser } from './createUser';
 export { details } from './details';
+export { guidExp } from './guidExp';
 export { login } from './login';
+export { passwordResetEmail } from './passwordResetEmail';
+export { updateCredentials } from './updateCredentials';
 export { recoverId } from './recoverId';
 export { securityQuestions } from './securityQuestions';
 export { email } from './email';

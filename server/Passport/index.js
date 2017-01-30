@@ -4,8 +4,11 @@ import { parseString } from 'xml2js';
 import {
   createUser,
   email,
+  guidExp,
   login, 
   details, 
+  passwordResetEmail,
+  updateCredentials,
   validateSession,
   recoverId,
   securityQuestions
@@ -226,6 +229,32 @@ export default class Passport {
     });
   }
 
+  getGuidExp(guid) {
+    return new Promise((resolve, reject) => {
+      const body = guidExp(guid);
+      const requestParams = this._createReq(this.passportCreds, body);
+
+      request.post(requestParams, (err, soapRes, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        parseString(body, {explicitArray: false}, (err, result) => {
+          if (result && result['SOAP-ENV:Envelope']) {
+            const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getGuidExpirationResponse'];
+            
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
+
+            resolve(soapResponse.profileIdentity);
+          } else {
+            reject('Error processing request.');
+          }
+        });
+      });
+    });
+  }
+
   sendEmail(msg, userId) {
     return new Promise((resolve, reject) => {
       const body = email(msg, userId);
@@ -243,9 +272,59 @@ export default class Passport {
             if (soapResponse['exception'])
               reject(this._parseError(soapResponse['exception']));
 
-            const { profileId } = soapResponse.profileIdentity;
+            resolve(soapResponse);
+          } else {
+            reject('Error processing request.');
+          }
+        });
+      });
+    });
+  }
 
-            resolve(profileId);
+  sendPasswordReset(msg) {
+    return new Promise((resolve, reject) => {
+      const body = passwordResetEmail(msg);
+      const requestParams = this._createReq(this.passportCreds, body);
+
+      request.post(requestParams, (err, soapRes, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        parseString(body, {explicitArray: false}, (err, result) => {
+          if (result && result['SOAP-ENV:Envelope']) {
+            const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:resetPasswordResponse'];
+
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
+
+            resolve(soapResponse.profileIdentity);
+          } else {
+            reject('Error processing request.');
+          }
+        });
+      });
+    });
+  }
+
+  changePassword(guid, user) {
+    return new Promise((resolve, reject) => {
+      const body = updateCredentials(guid, user);
+      const requestParams = this._createReq(this.passportCreds, body);
+
+      request.post(requestParams, (err, soapRes, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        parseString(body, {explicitArray: false}, (err, result) => {
+          if (result && result['SOAP-ENV:Envelope']) {
+            const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:updateCredentialsResponse'];
+
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
+
+            resolve(soapResponse.profileIdentity);
           } else {
             reject('Error processing request.');
           }
