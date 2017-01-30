@@ -29,6 +29,9 @@ export default function universalRender(req, res) {
     }
   };
 
+  // We need to append the user state with a questions array
+  // otherwise the app will throw errors as questions is part
+  // of user's initial state.
   if (user)
     storeConfig.user = {
       ...user,
