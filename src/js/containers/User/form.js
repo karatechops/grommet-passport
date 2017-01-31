@@ -11,7 +11,7 @@ import Paragraph from 'grommet/components/Paragraph';
 import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
 import FormRadio from '../../components/FormRadio';
-import { userCreate } from './actions';
+import { userCreate, resetError } from './actions';
 import { LANGUAGES, COUNTRIES } from './constants';
 import { objArrayFind, validEmail } from '../../utils';
 
@@ -39,6 +39,7 @@ export class UserForm extends Component {
   }
 
   _onSubmit(data) {
+    this.props.dispatch(resetError());
     if (!data.userId) {
       throw new SubmissionError({ 
         userId: 'Required',

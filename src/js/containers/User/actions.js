@@ -29,6 +29,11 @@ export const userError = (error) => ({
   error
 });
 
+export const resetError = () => ({
+  type: ActionTypes.USER_ERROR,
+  error: ''
+});
+
 export function userCreate(data) {
   return(dispatch, getState) => {
     const { url } = getState().api;

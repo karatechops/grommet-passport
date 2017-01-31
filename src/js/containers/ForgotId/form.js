@@ -32,7 +32,6 @@ export class ForgotUserIdPage extends Component {
       });
     }
 
-    console.log('submit', data);
     this.props.dispatch(submitRequest(data));
   }
 
