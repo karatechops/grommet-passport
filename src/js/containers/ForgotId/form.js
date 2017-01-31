@@ -6,24 +6,11 @@ import Box from 'grommet/components/Box';
 import Button from 'grommet/components/Button';
 import Footer from 'grommet/components/Footer';
 import Form from 'grommet/components/Form';
-import FormField from 'grommet/components/FormField';
 import Heading from 'grommet/components/Heading';
 import Paragraph from 'grommet/components/Paragraph';
-import TextInput from 'grommet/components/TextInput';
+import FormInput from '../../components/FormInput';
 import { submitRequest } from './actions';
 import { validEmail } from '../../utils';
-
-const renderInput = ({ customProps = {}, input, meta }) => (
-  <FormField label={customProps.label} htmlFor={customProps.id} 
-      error={meta.error}>
-    <TextInput 
-      onDOMChange={param => input.onChange(param.target.value)}
-      value={input.value} 
-      placeHolder={customProps.placeHolder || undefined} 
-      type={(customProps.password) ? 'password' : 'text'}
-    />
-  </FormField>
-);
 
 export class ForgotUserIdPage extends Component {
   constructor(props) {
@@ -75,7 +62,7 @@ export class ForgotUserIdPage extends Component {
               Email Address
             </Heading>
           </Box>
-          <Field name="emailAddress" component={renderInput} 
+          <Field name="emailAddress" component={FormInput} 
             customProps={{
               id: 'emailAddress',
               label: 'Email Address'

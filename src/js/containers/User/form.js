@@ -6,59 +6,14 @@ import Box from 'grommet/components/Box';
 import Button from 'grommet/components/Button';
 import Footer from 'grommet/components/Footer';
 import Form from 'grommet/components/Form';
-import FormField from 'grommet/components/FormField';
 import Heading from 'grommet/components/Heading';
 import Paragraph from 'grommet/components/Paragraph';
-import RadioButton from 'grommet/components/RadioButton';
-import Select from 'grommet/components/Select';
-import TextInput from 'grommet/components/TextInput';
+import FormInput from '../../components/FormInput';
+import FormSelect from '../../components/FormSelect';
+import FormRadio from '../../components/FormRadio';
 import { userCreate } from './actions';
 import { LANGUAGES, COUNTRIES } from './constants';
 import { objArrayFind, validEmail } from '../../utils';
-
-const renderInput = ({ customProps = {}, input, meta }) => (
-  <FormField label={customProps.label} htmlFor={customProps.id} 
-      error={meta.error}>
-    <TextInput 
-      onDOMChange={param => input.onChange(param.target.value)}
-      value={input.value} 
-      placeHolder={customProps.placeHolder || undefined} 
-      type={(customProps.password) ? 'password' : 'text'}
-    />
-  </FormField>
-);
-
-const renderSelect = ({ customProps= {}, input, meta: { touched, error } }) => (
-  <FormField label={customProps.label} htmlFor={customProps.id}>
-    <Select placeHolder='Search'
-      options={customProps.options}
-      value={input.value || customProps.defaultValue}
-      onSearch={ 
-        (customProps.onSearch)
-          ? customProps.onSearch.bind(
-              this, customProps.allOptions, customProps.stateKey)
-          : undefined
-      }
-      onChange={param => input.onChange(param.value)} />
-  </FormField>
-);
-
-const renderRadioSelect = props => (
-  <span>
-    <RadioButton
-      id="id2"
-      label="Yes"
-      checked={(props.input.value === 'Y') ? true : false}
-      onChange={param => props.input.onChange('Y')} 
-    />
-    <RadioButton
-      id="id"
-      label="No"
-      checked={(props.input.value === 'N') ? true : false}
-      onChange={param => props.input.onChange('N')} 
-    />
-  </span>
-);
 
 export class UserForm extends Component {
   constructor(props) {
@@ -195,14 +150,14 @@ export class UserForm extends Component {
             Login Information
           </Heading>
         </Box>
-        <Field name="userId" component={renderInput} 
+        <Field name="userId" component={FormInput} 
           customProps={{
             placeHolder: 'Typically your e-mail address.',
             id: 'userId',
             label: 'User ID'
           }}
         />
-        <Field name="password" component={renderInput} 
+        <Field name="password" component={FormInput} 
           customProps={{
             placeHolder: 'Minimum 8 letters, numbers and special characters.',
             id: 'password',
@@ -210,7 +165,7 @@ export class UserForm extends Component {
             password: true
           }}
         />
-        <Field name="passwordConfirm" component={renderInput} 
+        <Field name="passwordConfirm" component={FormInput} 
           customProps={{
             id: 'passwordConfirm',
             label: 'Confirm Password',
@@ -222,7 +177,7 @@ export class UserForm extends Component {
             Forgot Password Information
           </Heading>
         </Box>
-        <Field name="securityQuestion1" component={renderSelect} 
+        <Field name="securityQuestion1" component={FormSelect} 
           customProps={{
             id: 'securityQuestion1',
             label: 'Security Question 1',
@@ -232,14 +187,14 @@ export class UserForm extends Component {
               : undefined
           }}
         />
-        <Field name="securityAnswer1" component={renderInput} 
+        <Field name="securityAnswer1" component={FormInput} 
           customProps={{
             placeHolder: 'Security answer cannot have & | * " `',
             id: 'securityAnswer1',
             label: 'Security Answer 1'
           }}
         />
-        <Field name="securityQuestion2" component={renderSelect} 
+        <Field name="securityQuestion2" component={FormSelect} 
           customProps={{
             id: 'securityQuestion2',
             label: 'Security Question 2',
@@ -249,7 +204,7 @@ export class UserForm extends Component {
               : undefined
           }}
         />
-        <Field name="securityAnswer2" component={renderInput} 
+        <Field name="securityAnswer2" component={FormInput} 
           customProps={{
             placeHolder: 'Security answer cannot have & | * " `',
             id: 'securityAnswer2',
@@ -276,13 +231,13 @@ export class UserForm extends Component {
       ? this._renderNewUserFields()
       : undefined;
 
-    const error = (this.props.error || this.props.requestError)
+    const error = (this.props.requestError || this.props.error)
       ? <Box style=
           {{
             color: '#f04953'
           }}
         >
-          {this.props.error || this.props.requestError}
+          {this.props.requestError || this.props.error }
         </Box>
       : undefined;
 
@@ -298,25 +253,25 @@ export class UserForm extends Component {
               Personal Information
             </Heading>
           </Box>
-          <Field name="firstName" component={renderInput} 
+          <Field name="firstName" component={FormInput} 
             customProps={{
               id: 'firstName',
               label: 'First Name'
             }}
           />
-          <Field name="lastName" component={renderInput} 
+          <Field name="lastName" component={FormInput} 
             customProps={{
               id: 'lastName',
               label: 'Last Name'
             }}
           />
-          <Field name="emailAddress" component={renderInput} 
+          <Field name="emailAddress" component={FormInput} 
             customProps={{
               id: 'emailAddress',
               label: 'Email Address'
             }}
           />
-          <Field name="preferredLanguage" component={renderSelect} 
+          <Field name="preferredLanguage" component={FormSelect} 
             customProps={{ 
               id: 'preferredLanguage',
               label: 'Preferred Language',
@@ -326,7 +281,7 @@ export class UserForm extends Component {
               stateKey: 'languageOptions'
             }} 
           />
-          <Field name="residentCountryCode" component={renderSelect} 
+          <Field name="residentCountryCode" component={FormSelect} 
             customProps={{ 
               id: 'residentCountryCode',
               label: 'Country / Region of residence',
@@ -355,7 +310,7 @@ export class UserForm extends Component {
             <Paragraph>
               May HPE contact you by email?
             </Paragraph>
-            <Field name="contactByEmail" component={renderRadioSelect} />
+            <Field name="contactByEmail" component={FormRadio} />
           </Box>
 
           <Footer 
