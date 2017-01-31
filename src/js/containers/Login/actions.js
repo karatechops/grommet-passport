@@ -104,6 +104,7 @@ export function validateSession(sessionId) {
 
 export function logout() {
   return (dispatch) => {
+    dispatch(UserActions.userReset());
     dispatch(logoutSuccess());
     browserHistory.push('/');
   };

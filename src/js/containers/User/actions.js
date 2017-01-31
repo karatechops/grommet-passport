@@ -29,6 +29,10 @@ export const userError = (error) => ({
   error
 });
 
+export const userReset = () => ({
+  type: ActionTypes.USER_RESET
+});
+
 export const resetError = () => ({
   type: ActionTypes.USER_ERROR,
   error: ''

@@ -215,15 +215,37 @@ export class UserForm extends Component {
       </Box>);
   }
 
+  _renderFormHeader(userId) {
+    const title = (userId)
+      ? 'Edit HPE Passport Account'
+      : 'Create HPE Passport Account';
+    const body = (userId)
+      ? undefined
+      : <Paragraph>
+          If you are an active HPE employee, sign in with your @hpe.com e-mail address.
+          if you are outside the HPE organization, you'll need to specify an HPE 
+          sponsor after registering.
+        </Paragraph>;
+
+    return (
+      <Box pad="medium" size={{ width: { max: 'medium' } }} 
+        textAlign="center" alignSelf="center">
+        <Heading tag="h2" margin="none">
+          {title}
+        </Heading>
+        {body}
+      </Box>
+    );
+  }
+
   render() {
     const onSubmit = this.props.handleSubmit(this._onSubmit);
-    const { emailAddress } = this.props.initialValues;
     const { userId } = this.props;
 
-    const emailBlock = (emailAddress)
+    const userIdBlock = (userId)
       ? <Box pad={{ vertical: 'medium' }}>
           <Heading tag="h3" margin="none">
-            User ID <strong>{emailAddress}</strong>
+            User ID <strong>{userId}</strong>
           </Heading>
         </Box>
       : undefined;
@@ -242,9 +264,12 @@ export class UserForm extends Component {
         </Box>
       : undefined;
 
+    const formHeader = this._renderFormHeader();
+
     return (
-      <Box pad="medium">
-        {emailBlock}
+      <Box pad="medium" flex={false}>
+        {formHeader}
+        {userIdBlock}
         <Form onSubmit={onSubmit}>
           
           {newUserFields}

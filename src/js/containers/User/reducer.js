@@ -53,6 +53,10 @@ function user(state = initialState, action) {
         request: false,
         errorQuestions: action.error
       };
+    case ActionTypes.USER_RESET:
+      return {
+        ...initialState
+      };
     default:
       return state;
   }
