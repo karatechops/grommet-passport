@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import Box from 'grommet/components/Box';
-import PageMarquee from '../../components/PageMarquee';
 import ForgotPasswordForm from './form';
 import ResetPasswordForm from './formReset';
 
@@ -18,7 +17,6 @@ export class ForgotPasswordPage extends Component {
 
     return (
       <Box align="center">
-        <PageMarquee title={'Forgot Password'} />
         {form}
       </Box>
     );

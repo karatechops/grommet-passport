@@ -11,6 +11,7 @@ import Paragraph from 'grommet/components/Paragraph';
 import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
 import FormRadio from '../../components/FormRadio';
+import FormHeader from '../../components/FormHeader';
 import { userCreate, resetError } from './actions';
 import { LANGUAGES, COUNTRIES } from './constants';
 import { objArrayFind, validEmail } from '../../utils';
@@ -228,13 +229,7 @@ export class UserForm extends Component {
         </Paragraph>;
 
     return (
-      <Box pad="medium" size={{ width: { max: 'medium' } }} 
-        textAlign="center" alignSelf="center">
-        <Heading tag="h2" margin="none">
-          {title}
-        </Heading>
-        {body}
-      </Box>
+      <FormHeader title={title} body={body} />
     );
   }
 

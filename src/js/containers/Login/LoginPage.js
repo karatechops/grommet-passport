@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 
+import Anchor from 'grommet/components/Anchor';
 import Box from 'grommet/components/Box';
 import Button from 'grommet/components/Button';
 import Heading from 'grommet/components/Heading';
@@ -11,26 +12,61 @@ import Paragraph from 'grommet/components/Paragraph';
 import LoginForm from './form';
 import Logo from '../../components/Logo';
 import UserPage from '../User/UserPage';
+import ForgotPasswordPage from '../ForgotPassword/ForgotPasswordPage';
+import ForgotIdPage from '../ForgotId/ForgotIdPage';
 
 export class LoginPage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      layerActive: false
+      layerActive: false,
+      layerOptions: [
+        'create',
+        'id',
+        'pass'
+      ],
+      layerComponent: <UserPage />
     };
 
     this._toggleLayer = this._toggleLayer.bind(this);
+    this._closeLayer = this._closeLayer.bind(this);
   }
 
-  _toggleLayer() {
-    this.setState({ layerActive: !this.state.layerActive });
+  componentDidMount() {
+    if (this.props.params.guid)
+      this._toggleLayer(this.state.layerOptions[2]);
+  }
+
+  _toggleLayer(layerType) {
+    let layerComponent;
+
+    switch(layerType) {
+      case this.state.layerOptions[0]:
+        layerComponent = <UserPage />;
+        break;
+      case this.state.layerOptions[1]:
+        layerComponent = <ForgotIdPage />;
+        break;
+      case this.state.layerOptions[2]:
+        layerComponent = <ForgotPasswordPage params={this.props.params} />;
+        break;
+    }
+
+    this.setState({
+      layerActive: true,
+      layerComponent
+    });
+  }
+
+  _closeLayer() {
+    this.setState({ layerActive: false });
   }
 
   render() {
     const layer = (this.state.layerActive)
-      ? <Layer align="right" closer={true} onClose={this._toggleLayer}>
-          <UserPage />
+      ? <Layer align="right" closer={true} onClose={this._closeLayer}>
+          {this.state.layerComponent}
         </Layer>
       : undefined;
 
@@ -42,7 +78,7 @@ export class LoginPage extends Component {
           <Box basis="1/2">
             {/* Using row to get the correct width of the nested box */}
             <Box direction="row" justify="end">
-              <Box style={{ maxWidth: '100%' }}>
+              <Box>
                 <Box pad={{ vertical: 'large' }}>
                   <Logo width={240} />
                 </Box>
@@ -54,7 +90,14 @@ export class LoginPage extends Component {
                   and employees access to HPE content from a variety of tools needed
                   for getting business done.
                 </Paragraph>
-                <LoginForm />
+                <LoginForm 
+                  onForgotIdClick={
+                    this._toggleLayer.bind(this, this.state.layerOptions[1])
+                  } 
+                  onForgotPassClick={
+                    this._toggleLayer.bind(this, this.state.layerOptions[2])
+                  } 
+                />
                 <Button 
                   primary={true}
                   label="Log in with HPE Digital Badge" 
@@ -80,9 +123,11 @@ export class LoginPage extends Component {
                   sign in. If you are an HPE employee with an existing HPE Passport 
                   account, use the "reset account" to make changes.
                 </Paragraph>
-                <Box direction="row" alignSelf="center" pad="medium">
-                  <Button label="Create Account" onClick={this._toggleLayer} />
+                <Box direction="row" pad={{ vertical: 'medium' }}>
+                  <Button label="Create Account" 
+                    onClick={this._toggleLayer.bind(this, this.state.layerOptions[0])} />
                 </Box>
+                <Anchor path="#">Reset Account</Anchor>
               </Box>
             </Box>
           </Box>

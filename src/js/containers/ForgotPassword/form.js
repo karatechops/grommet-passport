@@ -9,6 +9,7 @@ import Form from 'grommet/components/Form';
 import Heading from 'grommet/components/Heading';
 import Paragraph from 'grommet/components/Paragraph';
 import FormInput from '../../components/FormInput';
+import FormHeader from '../../components/FormHeader';
 import { submitRequest } from './actions';
 import { validEmail } from '../../utils';
 
@@ -55,6 +56,7 @@ export class ForgotPasswordForm extends Component {
 
     return (
       <Box pad="medium">
+        <FormHeader title='Forgot Password' />
         <Form onSubmit={onSubmit}>
           <Box pad={{ vertical: 'medium' }}>
             {successMsg}

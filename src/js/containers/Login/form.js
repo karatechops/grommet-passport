@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 
+import Anchor from 'grommet/components/Anchor';
 import Box from 'grommet/components/Box';
 import Button from 'grommet/components/Button';
 import Footer from 'grommet/components/Footer';
@@ -72,6 +73,15 @@ export class LoginForm extends Component {
             direction="column"
             align="start">
             {error}
+
+            <Box direction="row" pad={{ between: 'medium' }}>
+              <Anchor onClick={this.props.onForgotIdClick}>
+                Forgot User ID?
+                </Anchor>
+              <Anchor onClick={this.props.onForgotPassClick}>
+                Forgot Password?
+              </Anchor>
+            </Box>
             <Button primary={true} label="Sign in" onClick={onSubmit} />
           </Footer>
         </Form>

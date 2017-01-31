@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 
-import Anchor from 'grommet/components/Anchor';
 import Box from 'grommet/components/Box';
 import Button from 'grommet/components/Button';
 import Footer from 'grommet/components/Footer';
@@ -10,6 +9,7 @@ import Form from 'grommet/components/Form';
 import Heading from 'grommet/components/Heading';
 import Paragraph from 'grommet/components/Paragraph';
 import FormInput from '../../components/FormInput';
+import FormHeader from '../../components/FormHeader';
 import { submitRequest } from './actions';
 
 export class ResetPasswordForm extends Component {
@@ -70,12 +70,12 @@ export class ResetPasswordForm extends Component {
       : undefined;
 
     const successMsg = (this.props.profileId !== '')
-      ? <Paragraph>Your password has been reset. Visit the&nbsp;
-          <Anchor path="/">login page</Anchor> to login.</Paragraph>
+      ? <Paragraph>Your password has been reset.</Paragraph>
       : '';
 
     return (
       <Box pad="medium">
+        <FormHeader title='Reset Password' />
         <Form onSubmit={onSubmit}>
           <Box pad={{ vertical: 'medium' }}>
             {successMsg}
