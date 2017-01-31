@@ -1,18 +1,7 @@
 import request from 'request';
 //import util from 'util';
 import { parseString } from 'xml2js';
-import {
-  createUser,
-  email,
-  guidExp,
-  login, 
-  details, 
-  passwordResetEmail,
-  updateCredentials,
-  validateSession,
-  recoverId,
-  securityQuestions
-} from './requests';
+import * as PassportRequest from './requests';
 
 export default class Passport {
   constructor({ url, username, password, appId}) {
@@ -51,7 +40,7 @@ export default class Passport {
 
   userLogin({ username, password }) {
     return new Promise((resolve, reject) => {
-      const body = login({ username, password }, this.passportCreds);
+      const body = PassportRequest.login({ username, password }, this.passportCreds);
 
       const requestParams = this._createReq(this.passportCreds, body);
 
@@ -79,7 +68,7 @@ export default class Passport {
 
   userDetails(sessionId) {
     return new Promise((resolve, reject) => {
-      const body = details(sessionId, this.passportCreds);
+      const body = PassportRequest.details(sessionId, this.passportCreds);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -111,7 +100,7 @@ export default class Passport {
 
   userCreate(user) {
     return new Promise((resolve, reject) => {
-      const body = createUser(user, this.passportCreds);
+      const body = PassportRequest.createUser(user, this.passportCreds);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -138,7 +127,7 @@ export default class Passport {
 
   validateSession(sessionId) {
     return new Promise((resolve, reject) => {
-      const body = validateSession(sessionId, this.passportCreds);
+      const body = PassportRequest.validateSession(sessionId, this.passportCreds);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -166,7 +155,7 @@ export default class Passport {
 
   getSecurityQuestions() {
     return new Promise((resolve, reject) => {
-      const body = securityQuestions(this.passportCreds.appId);
+      const body = PassportRequest.securityQuestions(this.passportCreds.appId);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -203,7 +192,7 @@ export default class Passport {
 
   getUserId(email) {
     return new Promise((resolve, reject) => {
-      const body = recoverId(email);
+      const body = PassportRequest.recoverId(email);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -231,7 +220,7 @@ export default class Passport {
 
   getGuidExp(guid) {
     return new Promise((resolve, reject) => {
-      const body = guidExp(guid);
+      const body = PassportRequest.guidExp(guid);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -257,7 +246,7 @@ export default class Passport {
 
   sendEmail(msg, userId) {
     return new Promise((resolve, reject) => {
-      const body = email(msg, userId);
+      const body = PassportRequest.email(msg, userId);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -283,7 +272,7 @@ export default class Passport {
 
   sendPasswordReset(msg) {
     return new Promise((resolve, reject) => {
-      const body = passwordResetEmail(msg);
+      const body = PassportRequest.passwordResetEmail(msg);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -309,7 +298,7 @@ export default class Passport {
 
   changePassword(guid, user) {
     return new Promise((resolve, reject) => {
-      const body = updateCredentials(guid, user);
+      const body = PassportRequest.updateCredentials(guid, user);
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
