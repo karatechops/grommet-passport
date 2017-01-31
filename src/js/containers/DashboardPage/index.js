@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import Box from 'grommet/components/Box';
+import { logout } from '../Login/actions';
 import DashboardNav from '../../components/DashboardNav';
 
 export class DashboardPage extends Component {
@@ -13,7 +14,7 @@ export class DashboardPage extends Component {
   }
 
   _onLogoutClick() {
-    console.log('logout');
+    this.props.dispatch(logout());
   }
 
   render() {

@@ -18,9 +18,8 @@ export const loginError = (error) => ({
   error
 });
 
-export const logoutSuccess = (user) => ({ 
-  type: ActionTypes.LOGOUT_SUCCESS,
-  user
+export const logoutSuccess = () => ({ 
+  type: ActionTypes.LOGOUT_SUCCESS
 });
 
 export function login(user) {
@@ -94,11 +93,18 @@ export function validateSession(sessionId) {
           const error = json.error || 'There was an error processing your request.';
           return dispatch(loginError(error));
         }
-        //cookie.load('sessionId');
+
         return dispatch(loginSuccess(json));
       }, (err) => {
         return dispatch(loginError('There was an error processing your request.'));
       }
     );
+  };
+}
+
+export function logout() {
+  return (dispatch) => {
+    dispatch(logoutSuccess());
+    browserHistory.push('/');
   };
 }
