@@ -62,7 +62,12 @@ export class LoginPage extends Component {
             />,
             <Anchor
               key='loginButton-02'
-              href='#'
+              path='/forgot-id'
+              label='Forgot user ID?'
+            />,
+            <Anchor
+              key='loginButton-03'
+              path='/forgot-password'
               label='Forgot password?' 
             />
           ]}

@@ -93,7 +93,7 @@ router.get('/user/security-questions', (req, res) => {
 });
 
 router.post('/user/forgot-id', (req, res) => {
-  const email = req.body.email;
+  const email = req.body.emailAddress;
 
   passport.getUserId(email)
     .then((userId) => {
@@ -114,8 +114,9 @@ router.post('/user/forgot-id', (req, res) => {
           console.log('send email error:', err);
           return res.status(400).send({error: err});
         });
-    }).catch((err) => {
-      console.log('get user id error:', err);
+    })
+    .catch((err) => {
+      console.log('Get user id error:', err);
       return res.status(400).send({ error: err });
     });
 });

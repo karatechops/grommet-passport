@@ -3,6 +3,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import App from './containers/App';
 import Login from './containers/Login/LoginPage';
 import UserPage from './containers/User/UserPage';
+import ForgotIdPage from './containers/ForgotId/ForgotIdPage';
 import NotFound from './containers/NotFoundPage';
 import Dashboard from './containers/DashboardPage';
 import DashboardHomePage from './containers/DashboardHomePage';
@@ -41,6 +42,7 @@ export const getRoutes = (store) => {
       <Route path="/" component={App}>
         <IndexRoute component={Login} onEnter={sessionCheck} />
         <Route path="/register" component={UserPage} />
+        <Route path="/forgot-id" component={ForgotIdPage} />
       </Route>
       <Route path="/dashboard" component={Dashboard} onEnter={authRequired}>
         <IndexRoute component={DashboardHomePage} />

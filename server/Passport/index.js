@@ -41,7 +41,6 @@ export default class Passport {
   userLogin({ username, password }) {
     return new Promise((resolve, reject) => {
       const body = PassportRequest.login({ username, password }, this.passportCreds);
-
       const requestParams = this._createReq(this.passportCreds, body);
 
       request.post(requestParams, (err, soapRes, body) => {
@@ -203,15 +202,15 @@ export default class Passport {
         parseString(body, {explicitArray: false}, (err, result) => {
           if (result && result['SOAP-ENV:Envelope']) {
             const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:recoverUserIdResponse'];
-            
+
             if (soapResponse['exception'])
-              reject(this._parseError(soapResponse['exception']));
+              return reject(this._parseError(soapResponse['exception']));
+ 
 
-            const { userId } = soapResponse.profileIdentity;
-
-            resolve(userId);
+            const { userId } = soapResponse['profileIdentity'];
+            return resolve(userId);
           } else {
-            reject('Error processing request.');
+            return reject('Error processing request.');
           }
         });
       });
