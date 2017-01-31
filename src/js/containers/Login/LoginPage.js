@@ -100,7 +100,7 @@ export class LoginPage extends Component {
                 />
                 <Button 
                   primary={true}
-                  label="Log in with HPE Digital Badge" 
+                  label="Sign in with HPE Digital Badge" 
                   href="https://cf.passport.hpe.com/athp.fcc?TARGET=http%3A%2F%2Flocalhost%3A8102%2Fdashboard"
                 />
               </Box>

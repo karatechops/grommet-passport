@@ -82,7 +82,9 @@ export class LoginForm extends Component {
                 Forgot Password?
               </Anchor>
             </Box>
-            <Button primary={true} label="Sign in" onClick={onSubmit} />
+            <Box full="horizontal">
+              <Button primary={true} label="Sign in" onClick={onSubmit} />
+            </Box>
           </Footer>
         </Form>
       </Box>
