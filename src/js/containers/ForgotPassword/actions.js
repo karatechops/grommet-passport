@@ -1,18 +1,18 @@
 import * as ActionTypes from './constants';
 
-export const forgotIdRequest = () => ({ 
-  type: ActionTypes.FORGOT_ID_REQUEST
+export const forgotPasswordRequest = () => ({ 
+  type: ActionTypes.FORGOT_PASSWORD_REQUEST
 });
 
-export const forgotIdSuccess = (user) => {
+export const forgotPasswordSuccess = (user) => {
   return {
-    type: ActionTypes.FORGOT_ID_SUCCESS,
+    type: ActionTypes.FORGOT_PASSWORD_SUCCESS,
     user 
   };
 };
 
-export const forgotIdError = (error) => ({
-  type: ActionTypes.FORGOT_ID_ERROR,
+export const forgotPasswordError = (error) => ({
+  type: ActionTypes.FORGOT_PASSWORD_ERROR,
   error
 });
 
@@ -20,9 +20,9 @@ export const submitRequest = (data) => {
   return (dispatch, getState) => {
     const { url } = getState().api;
 
-    dispatch(forgotIdRequest());
+    dispatch(forgotPasswordRequest());
 
-    return fetch(`${url}/user/forgot-id`, {
+    return fetch(`${url}/user/reset-password`, {
       method: 'POST',
       credentials: 'include',
       headers: new Headers({
@@ -40,12 +40,12 @@ export const submitRequest = (data) => {
       .then(({ status, statusText, json }) => {
         if (status >= 400) {
           const error = json.error || 'There was an error processing your request.';
-          return dispatch(forgotIdError(error));
+          return dispatch(forgotPasswordError(error));
         }
         
-        return dispatch(forgotIdSuccess(json));
+        return dispatch(forgotPasswordSuccess(json));
       }, (err) => {
-        return dispatch(forgotIdError('There was an error processing your request.'));
+        return dispatch(forgotPasswordError('There was an error processing your request.'));
       }
     );
   };

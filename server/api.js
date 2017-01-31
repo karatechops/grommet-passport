@@ -135,14 +135,14 @@ router.get('/user/guid', (req, res) => {
 
 
 // Send password reset link to user.
-router.get('/user/reset-password', (req, res) => {
-  const email = 'contact@lazers.tv';
+router.post('/user/forgot-password', (req, res) => {
+  const email = req.body.emailAddress;
   const msg = {
     to: email,
     from: 'passport@hpe.com',
     replyTo: 'passport@hpe.com',
     subject: 'Passport - Password Reset',
-    body: 'your GUID: $guid$'
+    body: `Password reset link: ${process.env.BASE_URL}/forgot-password/$guid$`
   };
 
   passport.sendPasswordReset(msg)
@@ -155,15 +155,15 @@ router.get('/user/reset-password', (req, res) => {
 
 // Password reset link. Validates GUID before attempting to change password.
 // Default Passport GUID expiration is 7 days.
-router.get('/user/reset-password/:guid', (req, res) => {
-  const guid = req.params.guid || 'ff5be85b-45ea-4fc0-9d93-a0a5b303f768';
+router.post('/user/reset-password', (req, res) => {
+  const guid = req.body.guid;
 
   passport.getGuidExp(guid)
     .then((data) => {
       const user = {
         userId: data.userId,
-        password: '3scap3ss',
-        passwordConfirm: '3scap3ss'
+        password: req.body.password,
+        passwordConfirm: req.body.passwordConfirm
       };
 
       passport.changePassword(guid, user)
