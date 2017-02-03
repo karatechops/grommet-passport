@@ -29,7 +29,8 @@ const app = express()
 
 // Allow external calls to API.
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", process.env.BASE_URL);
+  //res.header("Access-Control-Allow-Origin", process.env.BASE_URL);
+  res.header("Access-Control-Allow-Origin", 'http://localhost:7777');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header("X-Frame-Options", "deny");
