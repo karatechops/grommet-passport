@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import Passport from './Passport';
-import { flattenUser } from './Passport/utils';
+import { debug, flattenUser } from './Passport/utils';
 
 // Environment variables.
 // We import these here as well as server.js to make sure we 
@@ -46,7 +46,7 @@ router.post('/user/login', (req, res) => {
         );
     })
     .catch((err) => {
-      console.log('login error:', err);
+      debug('login error:', err);
       return res.status(400).send({ error: err });
     });
 });
@@ -61,22 +61,22 @@ router.post('/user/create', (req, res) => {
       };
       passport.userLogin(reqCreds)
         .then((sessionId) => {
-          console.log('logged in', sessionId, data);
+          debug('logged in', sessionId, data);
           return res.status(200).send({
             ...data,
             sessionId
           });
         })
         .catch((err) => {
-          console.log('login error:', err);
+          debug('login error:', err);
           return res.status(400).send({ error: err });
         });
 
-      //console.log('passport response:', data);
+      //debug('passport response:', data);
       //return res.status(400).send(data);
     })
     .catch((err) => {
-      console.log('create user error:', err);
+      debug('create user error:', err);
       return res.status(400).send({ error: err});
     });
 });
@@ -87,7 +87,7 @@ router.get('/user/security-questions', (req, res) => {
       return res.status(200).send({ data });
     })
     .catch((err) => {
-      console.log('security question error:', err);
+      debug('security question error:', err);
       return res.status(400).send({ error: err });
     });
 });
@@ -111,12 +111,12 @@ router.post('/user/forgot-id', (req, res) => {
           return res.status(200).send({ data });
         })
         .catch((err) =>{
-          console.log('send email error:', err);
+          debug('send email error:', err);
           return res.status(400).send({error: err});
         });
     })
     .catch((err) => {
-      console.log('Get user id error:', err);
+      debug('Get user id error:', err);
       return res.status(400).send({ error: err });
     });
 });
@@ -126,10 +126,10 @@ router.get('/user/guid', (req, res) => {
   const guid = 'ff5be85b-45ea-4fc0-9d93-a0a5b303f768';
   passport.getGuidExp(guid)
     .then((data) => {
-      console.log('data:', data);
+      debug('data:', data);
     })
     .catch((err) => {
-      console.log('GUID error:', err);
+      debug('GUID error:', err);
     });
 });
 
@@ -148,7 +148,7 @@ router.post('/user/forgot-password', (req, res) => {
   passport.sendPasswordReset(msg)
     .then((data) => res.status(200).send({ data }))
     .catch((err) => {
-      console.log('Send password reset error:', err);
+      debug('Send password reset error:', err);
       return res.status(400).send({ error: err });
     });
 });
@@ -168,7 +168,7 @@ router.post('/email-sponsor', (req, res) => {
   passport.sendPasswordReset(msg)
     .then((data) => res.status(200).send({ data }))
     .catch((err) => {
-      console.log('Send email error:', err);
+      debug('Send email error:', err);
       return res.status(400).send({ error: err });
     });
 });
@@ -191,7 +191,7 @@ router.post('/user/reset-password', (req, res) => {
         .catch((err) => res.status(400).send({ error: err }));
     })
     .catch((err) => {
-      console.log('GUID error:', err);
+      debug('GUID error:', err);
       return res.status(400).send({ error: err });
     });
 });
