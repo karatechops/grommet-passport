@@ -153,6 +153,26 @@ router.post('/user/forgot-password', (req, res) => {
     });
 });
 
+// Email a user, used specifically for sponsored users.
+router.post('/email-sponsor', (req, res) => {
+  const  { to, from, replyTo, subject, body } = req.body;
+
+  const msg = {
+    to,
+    from,
+    replyTo,
+    subject,
+    body
+  };
+
+  passport.sendPasswordReset(msg)
+    .then((data) => res.status(200).send({ data }))
+    .catch((err) => {
+      console.log('Send email error:', err);
+      return res.status(400).send({ error: err });
+    });
+});
+
 // Password reset link. Validates GUID before attempting to change password.
 // Default Passport GUID expiration is 7 days.
 router.post('/user/reset-password', (req, res) => {
