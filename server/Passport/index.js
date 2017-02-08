@@ -97,6 +97,33 @@ export default class Passport {
     });
   }
 
+  checkUserId(userId) {
+    return new Promise((resolve, reject) => {
+      const body = PassportRequest.checkUserId(userId, this.passportCreds);
+      const requestParams = this._createReq(this.passportCreds, body);
+
+      request.post(requestParams, (err, soapRes, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        parseString(body, {explicitArray: false}, (err, result) => {
+          if (result && result['SOAP-ENV:Envelope']) {
+            const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:checkUserExistsResponse'];
+
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
+
+            const profileId = soapResponse['profileIdByUserId'];
+            resolve(profileId);
+          } else {
+            reject('Error processing request.');
+          }
+        });
+      });
+    });
+  }
+
   userCreate(user) {
     return new Promise((resolve, reject) => {
       const body = PassportRequest.createUser(user, this.passportCreds);
@@ -260,7 +287,7 @@ export default class Passport {
             if (soapResponse['exception'])
               reject(this._parseError(soapResponse['exception']));
 
-            resolve(soapResponse);
+            resolve(soapResponse.profileIdentity.profileId);
           } else {
             reject('Error processing request.');
           }

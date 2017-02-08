@@ -1,4 +1,5 @@
 export { createUser } from './createUser';
+export { checkUserId } from './checkUserId';
 export { details } from './details';
 export { guidExp } from './guidExp';
 export { login } from './login';

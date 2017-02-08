@@ -71,12 +71,29 @@ router.post('/user/create', (req, res) => {
           debug('login error:', err);
           return res.status(400).send({ error: err });
         });
-
-      //debug('passport response:', data);
-      //return res.status(400).send(data);
     })
     .catch((err) => {
       debug('create user error:', err);
+      return res.status(400).send({ error: err});
+    });
+});
+
+// Check if user ID exists.
+router.post('/user/check-id', (req, res) => {
+  passport.checkUserId(req.body.userId)
+  .then((data) => res.status(200).send({ data: data }))
+  .catch((err) => res.status(400).send({ error: err }));
+});
+
+// Create user
+router.post('/sponsored-user/create', (req, res) => {
+  passport.userCreate(req.body)
+    .then((data) => {
+      debug('sponsored user:', data);
+      return res.status(200).send(data);
+    })
+    .catch((err) => {
+      debug('create sponsored user error:', err);
       return res.status(400).send({ error: err});
     });
 });
@@ -154,9 +171,8 @@ router.post('/user/forgot-password', (req, res) => {
 });
 
 // Email a user, used specifically for sponsored users.
-router.post('/email-sponsor', (req, res) => {
+router.post('/email', (req, res) => {
   const  { to, from, replyTo, subject, body } = req.body;
-
   const msg = {
     to,
     from,
@@ -165,12 +181,16 @@ router.post('/email-sponsor', (req, res) => {
     body
   };
 
-  passport.sendPasswordReset(msg)
-    .then((data) => res.status(200).send({ data }))
-    .catch((err) => {
-      debug('Send email error:', err);
-      return res.status(400).send({ error: err });
-    });
+  passport.getUserId(to)
+    .then((userId) => {
+      passport.sendEmail(msg, userId)
+        .then((data) => res.status(200).send({ data }))
+        .catch((err) => {
+          debug('Send email error:', err);
+          return res.status(400).send({ error: err });
+        });
+    })
+    .catch((err) => res.status(400).send({error: err}));
 });
 
 // Password reset link. Validates GUID before attempting to change password.
