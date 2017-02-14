@@ -51,6 +51,30 @@ router.post('/user/login', (req, res) => {
     });
 });
 
+// Validate User's session 
+router.post('/user/session', (req, res) => {
+  const { sessionId } = req.body;
+  passport.validateSession(sessionId)
+    .then((userId) => {
+      passport.userDetails(sessionId)
+        .then((user) => {
+          return res.status(200).send({
+            user: flattenUser(user),
+            sessionId
+          });
+        })
+        .catch((err) => {
+          console.log('user details error:', err);
+          return res.status(400).send({ error: err });
+        });
+    })
+    .catch((err) => {
+      // Session is not valid.
+      console.log('session validation error:', err);
+      return res.status(400).send({ error: err });
+    });
+});
+
 // Create user
 router.post('/user/create', (req, res) => {
   passport.userCreate(req.body)
