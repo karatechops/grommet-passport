@@ -70,6 +70,11 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const server = http.createServer(app);
-server.listen(PORT, 'localhost');
 
-console.log(`Server started, listening at port ${PORT}`);
+if (process.env.NODE_ENV === 'production') {
+  server.listen(PORT, 'localhost');
+  console.log(`Server started, listening to localhost requests at port ${PORT}`);
+} else {
+  server.listen(PORT);
+  console.log(`Server started, listening at port ${PORT}`);
+}
