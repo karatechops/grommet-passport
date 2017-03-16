@@ -29,15 +29,16 @@ const app = express()
 
 // Allow external calls to API.
 app.use(function(req, res, next) {
-  //res.header("Access-Control-Allow-Origin", process.env.BASE_URL);
-  //res.header("Access-Control-Allow-Origin", 'http://localhost:7789');
-  res.header("Access-Control-Allow-Origin", 'http://localhost:7777');
+  const origin = req.headers.origin || req.headers.host;
+  const allowedOrigins = [process.env.CMS_ORIGIN, process.env.FRONT_END_ORIGIN];
+  if (allowedOrigins.indexOf(origin) > -1) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header("X-Frame-Options", "deny");
   next();
 });
-
 // Views
 app.set('views', path.resolve(__dirname, 'views'));
 app.set('view engine', 'ejs');
