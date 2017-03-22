@@ -26,3 +26,8 @@ export const flattenUser = (user) => {
     securityLevel
   };
 };
+
+export const debug = (location, error) => {
+  if (process.env.DEBUG) 
+    console.log('[API Error]', location, error);
+};

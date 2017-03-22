@@ -10,7 +10,7 @@ export const email = ({ to, from, replyTo, subject, body }, userId) =>
               <userId>${userId}</userId>\
            </profileIdentity>\
            <emailTemplates>\
-              <body>${body}</body>\
+              <body><![CDATA[${body}]]></body>\
               <subject>${subject}</subject>\
               <fromAddress>${from}</fromAddress>\
               <replyTo>${replyTo}</replyTo>\
