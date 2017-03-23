@@ -44,7 +44,11 @@ app.set('views', path.resolve(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // REST API
-app.use('/api', api);
+if (process.env.API_PREFIX) {
+  app.use(`/${process.env.API_PREFIX}/api`, api);
+} else {
+  app.use(`/api`, api);
+}
 
 // Session check
 app.use('/', isAuthed, (req, res, next) => {
