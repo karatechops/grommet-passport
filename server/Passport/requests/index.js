@@ -9,3 +9,5 @@ export { recoverId } from './recoverId';
 export { securityQuestions } from './securityQuestions';
 export { email } from './email';
 export { validateSession } from './validateSession';
+export { rememberMeCookie } from './rememberMeCookie';
+export { rememberMeData } from './rememberMeData';

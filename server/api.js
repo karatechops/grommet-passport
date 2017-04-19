@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import Passport from './Passport';
-import { debug, flattenUser } from './Passport/utils';
+import { debug, flattenUser, flattenTokenUser } from './Passport/utils';
 
 // Environment variables.
 // We import these here as well as server.js to make sure we 
@@ -36,9 +36,20 @@ router.post('/user/login', (req, res) => {
     .then((sessionId) => {
       passport.userDetails(sessionId)
         .then((data) => {
-          return res.status(200).send({
-            user: flattenUser(data),
-            sessionId
+          const user = flattenUser(data);
+          passport.getRememberMeCookie(sessionId, user.profileId)
+          .then((rememberMe) => {
+            res.status(200).send({
+              user,
+              sessionId,
+              rememberMe
+            });
+          })
+          .catch((err) => {
+            res.status(200).send({
+              user,
+              sessionId
+            });
           });
         })
         .catch((err) => 
@@ -53,26 +64,51 @@ router.post('/user/login', (req, res) => {
 
 // Validate User's session 
 router.post('/user/session', (req, res) => {
-  const { sessionId } = req.body;
-  passport.validateSession(sessionId)
+  const { sessionId, rememberMe } = req.body;
+  const decodedSessionId = decodeURIComponent(sessionId);
+
+  passport.getRememberMeData(rememberMe)
+  .then((data) => {
+    res.status(200).send({
+      user: flattenTokenUser(data),
+      sessionId,
+      rememberMe
+    });
+  })
+  .catch((err) => {
+    // Remember me session is not valid, try Passport.
+    debug('session validation error:', err);
+    passport.validateSession(decodedSessionId)
     .then((userId) => {
-      passport.userDetails(sessionId)
-        .then((user) => {
-          return res.status(200).send({
-            user: flattenUser(user),
-            sessionId
+      passport.userDetails(decodedSessionId)
+        .then((data) => {
+          const user = flattenUser(data);
+          passport.getRememberMeCookie(sessionId, user.profileId)
+          .then((rememberMe) => {
+            res.status(200).send({
+              user,
+              sessionId,
+              rememberMe
+            });
+          })
+          .catch((err) => {
+            res.status(200).send({
+              user,
+              sessionId
+            });
           });
         })
         .catch((err) => {
-          console.log('user details error:', err);
+          debug('user details error:', err);
           return res.status(400).send({ error: err });
         });
     })
     .catch((err) => {
       // Session is not valid.
-      console.log('session validation error:', err);
+      debug('session validation error:', err);
       return res.status(400).send({ error: err });
     });
+  });
 });
 
 // Create user

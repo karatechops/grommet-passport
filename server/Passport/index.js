@@ -322,6 +322,64 @@ export default class Passport {
     });
   }
 
+  getRememberMeCookie(sessionToken, profileId) {
+    return new Promise((resolve, reject) => {
+      const body = 
+        PassportRequest.rememberMeCookie(this.passportCreds, sessionToken, profileId);
+      const requestParams = this._createReq(this.passportCreds, body);
+
+      request.post(requestParams, (err, soapRes, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        parseString(body, {explicitArray: false}, (err, result) => {
+          if (result && result['SOAP-ENV:Envelope']) {
+            const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getRememberMeCookieResponse'];
+
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
+
+            resolve(soapResponse.cookieData);
+          } else {
+            reject('Error processing request.');
+          }
+        });
+      });
+    });
+  }
+
+  getRememberMeData(rememberMeId) {
+    return new Promise((resolve, reject) => {
+      if (!rememberMeId) {
+        // This allows the session validation chain to continue to a Passport session.
+        reject('No remember me token found.');
+      }
+
+      const body = 
+        PassportRequest.rememberMeData(this.passportCreds, rememberMeId);
+      const requestParams = this._createReq(this.passportCreds, body);
+
+      request.post(requestParams, (err, soapRes, body) => {
+        if (err) {
+          reject(err);
+        }
+
+        parseString(body, {explicitArray: false}, (err, result) => {
+          if (result && result['SOAP-ENV:Envelope']) {
+            const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:getRememberMeDataResponse'];
+
+            if (soapResponse['exception'])
+              reject(this._parseError(soapResponse['exception']));
+            resolve(soapResponse.coreProfile);
+          } else {
+            reject('Error processing request.');
+          }
+        });
+      });
+    });
+  }
+
   changePassword(guid, user) {
     return new Promise((resolve, reject) => {
       const body = PassportRequest.updateCredentials(guid, user);
