@@ -84,14 +84,15 @@ router.post('/user/session', (req, res) => {
         .then((data) => {
           const user = flattenUser(data);
           passport.getRememberMeCookie(sessionId, user.profileId)
-          .then((rememberMe) => {
+          .then((rememberMeToken) => {
             res.status(200).send({
               user,
               sessionId,
-              rememberMe
+              rememberMe: rememberMeToken
             });
           })
           .catch((err) => {
+            // If get remember cookie fails just return data as usual.
             res.status(200).send({
               user,
               sessionId
