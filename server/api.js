@@ -39,14 +39,14 @@ router.post('/user/login', (req, res) => {
           const user = flattenUser(data);
           passport.getRememberMeCookie(sessionId, user.profileId)
           .then((rememberMe) => {
-            res.status(200).send({
+            return res.status(200).send({
               user,
               sessionId,
               rememberMe
             });
           })
           .catch((err) => {
-            res.status(200).send({
+            return res.status(200).send({
               user,
               sessionId
             });
