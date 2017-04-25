@@ -170,6 +170,14 @@ router.get('/user/security-questions', (req, res) => {
     });
 });
 
+router.post('/user/get-id', (req, res) => {
+  const { emailAddress } = req.body;
+
+  passport.getUserId(emailAddress)
+    .then(userId => res.status(200).send({ userId }))
+    .catch(error => res.status(400).send({ error }));
+});
+
 router.post('/user/forgot-id', (req, res) => {
   const email = req.body.emailAddress;
 
@@ -199,19 +207,6 @@ router.post('/user/forgot-id', (req, res) => {
     });
 });
 
-// Test GUID route. To be removed...
-router.get('/user/guid', (req, res) => {
-  const guid = 'ff5be85b-45ea-4fc0-9d93-a0a5b303f768';
-  passport.getGuidExp(guid)
-    .then((data) => {
-      debug('data:', data);
-    })
-    .catch((err) => {
-      debug('GUID error:', err);
-    });
-});
-
-
 // Send password reset link to user.
 router.post('/user/forgot-password', (req, res) => {
   const email = req.body.emailAddress;
@@ -222,6 +217,19 @@ router.post('/user/forgot-password', (req, res) => {
     subject: 'Passport - Password Reset',
     body: `Password reset link: ${process.env.BASE_URL}/forgot-password/$guid$`
   };
+
+  passport.sendPasswordReset(msg)
+    .then((data) => res.status(200).send({ data }))
+    .catch((err) => {
+      debug('Send password reset error:', err);
+      return res.status(400).send({ error: err });
+    });
+});
+
+// Get password reset GUID.
+router.post('/user/forgot-password-custom', (req, res) => {
+  const { msg } = req.body;
+  console.log('msg', msg);
 
   passport.sendPasswordReset(msg)
     .then((data) => res.status(200).send({ data }))

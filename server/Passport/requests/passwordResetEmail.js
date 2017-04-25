@@ -9,7 +9,7 @@ export const passwordResetEmail = ({ to, from, replyTo, subject, body }) =>
            </requestContext>\
            <emailTemplates>\
               <templateType>WELCOME_EXP_GUID</templateType>\
-              <body>${body}</body>\
+              <body><![CDATA[${body}]]></body>\
               <subject>${subject}</subject>\
               <fromAddress>${from}</fromAddress>\
               <replyTo>${replyTo}</replyTo>\
