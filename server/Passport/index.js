@@ -310,8 +310,13 @@ export default class Passport {
           if (result && result['SOAP-ENV:Envelope']) {
             const soapResponse = result['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns3:resetPasswordResponse'];
 
-            if (soapResponse['exception'])
-              reject(this._parseError(soapResponse['exception']));
+            if (soapResponse['exception']) {
+              let errorMsg = this._parseError(soapResponse['exception']);
+              if (errorMsg === 'If your email exists in our repository, you\'ll receive a reset link') {
+                errorMsg = 'A Passport account associated with this email address was not found.';
+              }
+              reject(errorMsg);
+            }
 
             resolve(soapResponse.profileIdentity);
           } else {
